@@ -1,0 +1,14 @@
+.loaderWrapper {
+  display: flex;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.059);
+  z-index: 999999;
+  backdrop-filter: blur(10px);
+}

@@ -1,0 +1,86 @@
+.draggableEvent {
+  background-color: #4caf50; /* Цвет фона */
+  color: white; /* Цвет текста */
+  padding: 10px; /* Внутренние отступы */
+  border-radius: 4px; /* Скругление углов */
+  border: 1px solid #388e3c; /* Цвет рамки */
+  cursor: grab; /* Изменение курсора при наведении */
+}
+
+.draggableEvent.dragging {
+  opacity: 0.5;
+}
+
+.droppableList {
+  background-color: #b99968; /* Цвет фона */
+  color: white; /* Цвет текста */
+  padding: 10px; /* Внутренние отступы */
+  height: 300px;
+  width: 100%;
+  border-radius: 4px; /* Скругление углов */
+  border: 1px solid #388e3c; /* Цвет рамки */
+}
+
+.list {
+  max-height: calc(100vh - 6rem);
+  overflow: scroll;
+  margin-top: 0;
+}
+
+.listItem {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.listItemTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: no-wrap;
+  width: 100%;
+  text-align: left;
+}
+
+.listItemTitleShort {
+  width: 100%;
+  text-align: left;
+}
+
+.listItem > svg {
+  transform: rotate(0deg);
+  transition: transform ease-in-out 0.2s;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.listItem > svg > path {
+  fill: gray;
+  transition: fill ease-in-out 0.3s;
+}
+
+.listItem:hover {
+  svg > path {
+    fill: #5e5e5e;
+  }
+  svg[data-testid="SettingsIcon"] {
+    transform: rotate(180deg);
+  }
+}
+
+.listItem:hover {
+  background-color: #388e3c17;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.button-show:hover {
+  background-color: rgba(128, 128, 128, 0.107);
+}
+
+.button-show {
+  transition: all ease-in 0.2s;
+  border-radius: 8px;
+  padding: 10px;
+}

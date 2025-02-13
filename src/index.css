@@ -1,0 +1,166 @@
+:root {
+  font-family: "Nunito Sans", serif;
+  font-optical-sizing: auto;
+  color: rgb(17, 17, 17);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  letter-spacing: 0%;
+  text-align: left;
+
+  color-scheme: light dark;
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+input {
+  box-sizing: border-box;
+  border: 0.06rem solid rgba(102, 102, 102, 0.35);
+  border-radius: 0.675rem;
+  padding: 1.25rem 1rem;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@use "react-calendar-timeline/dist/Timeline.scss" as *; /*with (
+$sidebar-background-color: #2196f3,
+//$weekend:#29b31a
+) ;*/
+
+.react-calendar-timeline .rct-item.item-weekend {
+  background: #21f32c;
+  border-color: #29b31a;
+}
+.demo-row {
+  padding: 10px;
+  line-height: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #fff;
+  z-index: 100;
+  &.sticky {
+    position: relative;
+  }
+  a {
+    margin-left: 10px;
+    color: blue;
+    text-decoration: none;
+    &.selected {
+      text-decoration: underline;
+    }
+  }
+}
+
+.demo-demo {
+  margin-top: 35px;
+  margin-top: 55px;
+}
+
+.demo-selection {
+  margin-left: 10px;
+  text-decoration: none;
+  &.selected {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+}
+.holiday {
+  background-color: rgba(250, 246, 225, 0.5);
+}
+.lunch {
+  background-color: rgba(
+    255,
+    0,
+    0,
+    0.5
+  ) !important; /* we need to overwrite the weekend rule */
+}
+.row-root {
+  position: relative;
+  z-index: 999;
+  background-color: darkgray !important;
+}
+.sticky {
+  position: sticky;
+  position: -webkit-sticky;
+  left: 45%;
+  display: inline-block;
+  border-radius: 2px;
+  padding: 0 6px;
+  height: 100%;
+}
+.header-background {
+  background: azure;
+}
+.draggable {
+  touch-action: none;
+  user-select: none;
+
+  z-index: 1000;
+}
+
+.drop-active {
+  background-color: #b4b4b4;
+}
+.drop-active-element {
+  border-color: #0000ff;
+}
