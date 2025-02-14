@@ -55,6 +55,18 @@
   gap: 5px;
 }
 
+.headerSidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  img {
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+  }
+}
+
 .wrapper-picker {
   display: flex;
   align-items: center;

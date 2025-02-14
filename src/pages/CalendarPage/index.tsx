@@ -405,6 +405,25 @@ export const CalendarPage: FC = () => {
     }
   };
 
+  useEffect(() => {
+    const sidebarHeader = document.querySelector(
+      '[data-testid="sidebarHeader"]'
+    );
+    if (sidebarHeader) {
+      sidebarHeader.className = "headerSidebar";
+      const existingImg = sidebarHeader.querySelector(
+        'img[data-img-id="logotype"]'
+      );
+      if (!existingImg) {
+        const img = document.createElement("img");
+        img.src = "/src/pages/LoginPage/assets/photo%20(1).png";
+        img.alt = "logo";
+        img.setAttribute("data-img-id", "logotype");
+        sidebarHeader.appendChild(img);
+      }
+    }
+  }, []);
+
   if (groups.length === 0) {
     return <></>;
   }
