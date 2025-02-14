@@ -177,8 +177,8 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
             id="date&time"
           />
         </div>
-        <p className="notify">Актуально только при постановке в график</p>
-        <div className="wrapper-picker">
+        {/* <p className="notify">Актуально только при постановке в график</p> */}
+        <div className="wrapper-picker" style={{ marginBottom: "1rem" }}>
           <label htmlFor="lock">Залочить при поставновке в график</label>
           <input
             type="checkbox"
@@ -187,7 +187,7 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
             id="lock"
           />
         </div>
-        <p className="notify">Актуально только при постановке в график</p>
+        {/* <p className="notify">Актуально только при постановке в график</p> */}
         {!autoTime && (
           <div style={{ marginBottom: "0.5rem" }}>
             <h3 style={{ margin: "0 0 0.5rem" }}>Выберите дату:</h3>

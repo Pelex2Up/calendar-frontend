@@ -628,7 +628,7 @@ export const CalendarPage: FC = () => {
           overflow: "hidden",
         }}
       >
-        <div>{date?.toLocaleTimeString()}</div>
+        {/* <div>{date?.toLocaleTimeString()}</div> */}
         {groups.length > 0 && dragItem && itemRenderer && (
           <Timeline
             groups={groups}

@@ -85,8 +85,13 @@ export const ModalTaskInfo: FC<IInfoTaskModal> = ({
           </p>
         </div>
         <div className="wrapper-comment">
-          <label htmlFor="comment">Комментарий печатнику:</label>
-          <textarea id="comment" value={comment} disabled />
+          <label htmlFor="comment">
+            Комментарий печатнику:{" "}
+            <span id="comment" style={{ fontWeight: "bold" }}>
+              {comment ? comment : "Нет комментария"}
+            </span>
+          </label>
+          {/* <textarea id="comment" value={comment} disabled /> */}
         </div>
         {!task.isCompleted ? (
           <>
