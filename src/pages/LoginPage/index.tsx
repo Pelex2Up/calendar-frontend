@@ -80,6 +80,7 @@ export const LoginPage: FC = () => {
             <input
               id="password"
               name="password"
+              type="password"
               placeholder="Пароль"
               className={styles.form_field_inputField}
             />

@@ -11,6 +11,14 @@
   opacity: 0.5;
 }
 
+.mainHeader {
+  background-color: #85837f;
+}
+
+div[data-testid='sidebarHeader'] {
+  background-color: #85837f;
+}
+
 .droppableList {
   background-color: #b99968; /* Цвет фона */
   color: white; /* Цвет текста */

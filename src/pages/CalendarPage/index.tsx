@@ -661,6 +661,7 @@ export const CalendarPage: FC = () => {
             <TimelineHeaders>
               <DateHeader
                 height={60}
+                className="mainHeader"
                 unit="primaryHeader"
                 labelFormat={(date) => {
                   if (zoomUnit === "hour") {

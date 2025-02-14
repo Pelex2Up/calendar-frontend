@@ -31,19 +31,21 @@
 
 .wrapper-selector > select {
   width: 100%;
+  border: 0.06rem solid rgba(102, 102, 102, 0.35);
+  border-radius: 0.675rem;
+  padding: 0.5rem 1rem;
 }
 
 .wrapper-time {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: -0.5rem;
 }
 
 .wrapper-time > input {
-  width: 50px;
-  border-radius: 3px;
-  border: 1px solid black;
+  width: 110px;
+  border: 0.06rem solid rgba(102, 102, 102, 0.35);
+  border-radius: 0.675rem;
 }
 
 .wrapper-comment {
@@ -59,9 +61,12 @@
 }
 
 .wrapper-comment > textarea {
-  width: 100%;
+  /* width: 100%; */
   min-height: 50px;
   resize: vertical;
+  border: 0.06rem solid rgba(102, 102, 102, 0.35);
+  border-radius: 0.675rem;
+  padding: 1.25rem 1rem;
 }
 
 .buttons {
@@ -93,8 +98,7 @@ input[type="checkbox"] {
   width: 20px;
 }
 
-input,
-select {
+input {
   height: 25px;
 }
 

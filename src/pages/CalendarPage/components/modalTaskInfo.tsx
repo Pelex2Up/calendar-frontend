@@ -62,7 +62,17 @@ export const ModalTaskInfo: FC<IInfoTaskModal> = ({
         <h2>Детали задачи</h2>
         <div className="wrapper-selector" style={{ height: "min-content" }}>
           <label htmlFor="taskName">Название:</label>
-          <p style={{ fontWeight: "bold" }}>{task.name}</p>
+          <p
+            title={task.name}
+            style={{
+              fontWeight: "bold",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {task.name}
+          </p>
         </div>
         <div className="wrapper-selector" style={{ height: "min-content" }}>
           <label htmlFor="description">Описание:</label>

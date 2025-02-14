@@ -43,7 +43,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
     new Date()
   );
   const [comment, setComment] = useState<string>("");
-  const [autoTaskTime, setAutoTaskTime] = useState<boolean>(false);
+  const [autoTaskTime, setAutoTaskTime] = useState<boolean>(true);
   const [densityArray, setDensityArray] = useState<number[]>();
   const [formatArray, setFormatArray] =
     useState<{ Key: string; Value: number }[]>();
@@ -54,10 +54,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
     format: formatArray ? formatArray[0].Value : undefined,
   });
   const [publish, setPublish] = useState<boolean>(false);
-  const [taskTime, setTaskTime] = useState<{ hours: string; minutes: string }>({
-    hours: "",
-    minutes: "",
-  });
+  const [taskTime, setTaskTime] = useState<string>("00:00");
   const [createTime, setCreateTime] = useState<string>("00:00");
   const [createTask, { isLoading }] = useCreateNewTaskMutation();
 
@@ -102,8 +99,8 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
     event.preventDefault();
     const submitedData = {
       name: taskName,
-      hours: Number(taskTime.hours),
-      minutes: Number(taskTime.minutes),
+      hours: Number(taskTime.split(":")[0]),
+      minutes: Number(taskTime.split(":")[1]),
       machineId: selectedState.machine,
       paperType: selectedState.material,
       density: selectedState.density,
@@ -115,8 +112,12 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
         ? moment(selectedDate.toISOString()).valueOf() / 1000
         : "",
       optionalAutomaticTimeSelection: autoTaskTime,
-      optionalHourToPublish: Number(createTime.split(":")[0]),
-      optionalMinutesToPublish: Number(createTime.split(":")[1]),
+      optionalHourToPublish: autoTaskTime
+        ? 0
+        : Number(createTime.split(":")[0]),
+      optionalMinutesToPublish: autoTaskTime
+        ? 0
+        : Number(createTime.split(":")[1]),
       publishImmidiately: publish,
     };
     if (submitedData && userId) {
@@ -130,7 +131,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
           setPublish(false);
           setComment("");
           setCreateTime("00:00");
-          setTaskTime({ hours: "", minutes: "" });
+          setTaskTime("00:00");
           toast.success(data.optionalAlertMessage);
           onClose();
         })
@@ -150,41 +151,18 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
           required
           onChange={(event) => setTaskName(event.target.value)}
         />
-        <label htmlFor="hours">Время на выполнение*:</label>
+
         <div className="wrapper-time">
-          <label htmlFor="hours">Часы</label>
+          <label htmlFor="hours">Время на выполнение:</label>
           <input
             id="hours"
-            type="number"
+            type="time"
             required
-            min={0}
-            value={taskTime.hours}
-            onChange={(event) =>
-              setTaskTime((prev) => ({
-                ...prev,
-                hours: event.target.value,
-              }))
-            }
-            name="hours"
-            placeholder="0"
-          />
-          <label htmlFor="minutes">Минуты</label>
-          <input
-            id="minutes"
-            type="number"
-            required
-            value={taskTime.minutes}
-            onChange={(event) =>
-              setTaskTime((prev) => ({
-                ...prev,
-                minutes: event.target.value,
-              }))
-            }
-            max={59}
-            min={0}
-            maxLength={2}
-            name="minutes"
-            placeholder="0"
+            min={"00:05"}
+            style={{ width: "110px" }}
+            value={taskTime}
+            onChange={(event) => setTaskTime(event.target.value)}
+            name="taskTime"
           />
         </div>
         <div className="wrapper-selector">
@@ -249,7 +227,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
                 ))}
               </select>
             </div>
-            <p className="notify">Зависит от материала!</p>
+            {/* <p className="notify">Зависит от материала!</p> */}
           </>
         )}
         {formatArray && formatArray?.length > 0 && (
@@ -280,7 +258,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
                 ))}
               </select>
             </div>
-            <p className="notify">Зависит от материала!</p>
+            {/* <p className="notify">Зависит от материала!</p> */}
           </>
         )}
         <div className="wrapper-comment">
@@ -300,7 +278,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
             id="date&time"
           />
         </div>
-        <p className="notify">Актуально только при постановке в график</p>
+        {/* <p className="notify">Актуально только при постановке в график</p> */}
         <div className="wrapper-picker">
           <label htmlFor="lock">Залочить при поставновке в график</label>
           <input
@@ -310,7 +288,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
             id="lock"
           />
         </div>
-        <p className="notify">Актуально только при постановке в график</p>
+        {/* <p className="notify">Актуально только при постановке в график</p> */}
         {!autoTime && (
           <div style={{ marginBottom: "0.5rem" }}>
             <h3 style={{ margin: "0 0 0.5rem" }}>Выберите дату:</h3>
@@ -361,9 +339,6 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
                   name="hours-time"
                   required={!autoTaskTime}
                   placeholder="0"
-                  min={0}
-                  max={23}
-                  maxLength={2}
                   value={createTime}
                   style={{ width: "110px" }}
                   onChange={(event) => setCreateTime(event.target.value)}

@@ -36,18 +36,22 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
     new Date()
   );
   const [comment, setComment] = useState<string>("");
-  const [autoTaskTime, setAutoTaskTime] = useState<boolean>(false);
-  const [taskTime, setTaskTime] = useState<{ hours: string; minutes: string }>({
-    hours: "",
-    minutes: "",
-  });
+  const [autoTaskTime, setAutoTaskTime] = useState<boolean>(true);
+  const [taskTime, setTaskTime] = useState<string>("00:00");
   const [createTime, setCreateTime] = useState<string>("00:00");
 
   useEffect(() => {
-    setTaskTime({ hours: String(task.hours), minutes: String(task.minutes) });
-    setTaskName(task.name);
-    setLock(task.isLocked);
-    setComment(task.optionalComment);
+    if (taskName !== task.name) {
+      setTaskTime(
+        `${String(task.hours).padStart(2, "0")}:${String(task.minutes).padStart(
+          2,
+          "0"
+        )}`
+      );
+      setTaskName(task.name);
+      setLock(task.isLocked);
+      setComment(task.optionalComment);
+    }
   }, [task]);
 
   useEffect(() => {
@@ -60,8 +64,8 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
     event.preventDefault();
     const submitedData = {
       name: taskName,
-      hours: Number(taskTime.hours),
-      minutes: Number(taskTime.minutes),
+      hours: Number(taskTime.split(":")[0]),
+      minutes: Number(taskTime.split(":")[1]),
       machineId: task.machineId,
       optionalComment: comment,
       automaticPublishing: autoTime,
@@ -113,25 +117,21 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
           <label htmlFor="description">Описание задачи:</label>
           <p style={{ fontSize: 14 }}>{task.description}</p>
         </div>
-        <label htmlFor="hours">Время на выполнение*:</label>
+
         <div className="wrapper-time">
-          <label htmlFor="hours">Часы</label>
+          {/* <label htmlFor="hours">Часы</label> */}
+          <label htmlFor="hours">Время на выполнение*:</label>
           <input
             id="hours"
-            type="number"
+            type="time"
             required
-            min={0}
-            value={taskTime.hours}
-            onChange={(event) =>
-              setTaskTime((prev) => ({
-                ...prev,
-                hours: event.target.value,
-              }))
-            }
+            min={"00:05"}
+            value={taskTime}
+            onChange={(event) => setTaskTime(event.target.value)}
             name="hours"
             placeholder="0"
           />
-          <label htmlFor="minutes">Минуты</label>
+          {/* <label htmlFor="minutes">Минуты</label>
           <input
             id="minutes"
             type="number"
@@ -148,23 +148,13 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
             maxLength={2}
             name="minutes"
             placeholder="0"
-          />
+          /> */}
         </div>
         <div className="wrapper-selector">
           <label htmlFor="machine">Машина:</label>
-          <select
-            id="machine"
-            required
-            disabled
-            defaultValue={"Выберите машину"}
-            value={task.machineId}
-          >
+          <select id="machine" required disabled value={task.machineId}>
             {machines.map((machine) => (
-              <option
-                selected={machine.Value === task.machineId}
-                value={machine.Value}
-                key={machine.Value}
-              >
+              <option value={machine.Value} key={machine.Value}>
                 {machine.Key}
               </option>
             ))}
