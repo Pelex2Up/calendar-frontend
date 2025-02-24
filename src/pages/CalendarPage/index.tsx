@@ -311,7 +311,7 @@ export const CalendarPage: FC = () => {
         event.data
       );
       setIsBusy(data.lockUi);
-      if (isBusy) toast.loading(data.optionalMessage, { duration: 800 });
+      if (data.lockUi) toast.loading(data.optionalMessage, { duration: 5000 });
     });
 
     eventSource.onopen = () => {
@@ -503,7 +503,8 @@ export const CalendarPage: FC = () => {
         isFetching ||
         movingTask ||
         resizingTask ||
-        resizingCalendarTask) && <Loader />}
+        resizingCalendarTask ||
+        isBusy) && <Loader />}
       <div style={{ padding: "0 30px 0 0" }}>
         <motion.div
           layout

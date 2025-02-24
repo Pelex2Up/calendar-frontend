@@ -11,7 +11,7 @@ export const MainLayout: FC = () => {
       <Toaster position="bottom-right" reverseOrder={false} />
       <Tooltip
         id="my-tooltip"
-        style={{ zIndex: "99999" }}
+        style={{ zIndex: "9999999" }}
       />
     </>
   );
