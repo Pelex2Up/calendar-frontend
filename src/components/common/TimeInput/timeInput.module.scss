@@ -1,0 +1,32 @@
+.timeInput {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-width: 120px;
+  //   padding: 8px;
+  width: fit-content; /* Устанавливаем ширину по содержимому */
+  font-family: inherit;
+  font-size: 16px; /* Размер шрифта */
+}
+
+.timeInput input {
+  padding: 0.4rem;
+  border: none;
+  outline: none;
+  height: 40px;
+  width: 40px; /* Ширина для поля ввода часов */
+  text-align: center; /* Центрируем текст */
+}
+
+.timeInput span {
+  font-weight: bold; /* Жирный текст для разделителя */
+}
+
+.timeInput input::placeholder {
+  color: #aaa; /* Цвет заполнителя */
+}
+
+.timeInput svg {
+  margin-right: 7px;
+}

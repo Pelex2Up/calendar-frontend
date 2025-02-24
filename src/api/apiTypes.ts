@@ -8,6 +8,7 @@ export interface ILoginResponse {
 }
 
 export interface IListTask {
+  publishedDateTimeInfo: string;
   optionalComment: string;
   description: string;
   endingSlotIndex: number;

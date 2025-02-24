@@ -73,6 +73,21 @@ export const calendarService = createApi({
         body: data,
       }),
     }),
+    resizeTask: build.mutation<
+      any,
+      {
+        userId: number;
+        taskId: number;
+        unixStartTime: number;
+        unixEndTime: number;
+      }
+    >({
+      query: (data) => ({
+        url: "/StretchTaskTime/",
+        method: "POST",
+        body: data,
+      }),
+    }),
     moveTask: build.mutation<
       any,
       {
@@ -92,6 +107,7 @@ export const calendarService = createApi({
 });
 
 export const {
+  useResizeTaskMutation,
   useResizeWorkTimeMutation,
   usePublishTaskMutation,
   useMoveTaskMutation,

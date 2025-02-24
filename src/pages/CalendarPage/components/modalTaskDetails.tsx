@@ -12,6 +12,7 @@ import { useAppSelector } from "../../../store/hooks";
 import { selectUser } from "../../../selectors";
 import toast from "react-hot-toast";
 import moment from "moment";
+import { TimeInput } from "../../../components/common/TimeInput";
 
 interface IDetailsTaskModal {
   isOpen: boolean;
@@ -121,34 +122,7 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
         <div className="wrapper-time">
           {/* <label htmlFor="hours">Часы</label> */}
           <label htmlFor="hours">Время на выполнение*:</label>
-          <input
-            id="hours"
-            type="time"
-            required
-            min={"00:05"}
-            value={taskTime}
-            onChange={(event) => setTaskTime(event.target.value)}
-            name="hours"
-            placeholder="0"
-          />
-          {/* <label htmlFor="minutes">Минуты</label>
-          <input
-            id="minutes"
-            type="number"
-            required
-            value={taskTime.minutes}
-            onChange={(event) =>
-              setTaskTime((prev) => ({
-                ...prev,
-                minutes: event.target.value,
-              }))
-            }
-            max={59}
-            min={0}
-            maxLength={2}
-            name="minutes"
-            placeholder="0"
-          /> */}
+          <TimeInput name="time" setTime={setTaskTime} time={taskTime} />
         </div>
         <div className="wrapper-selector">
           <label htmlFor="machine">Машина:</label>
@@ -232,37 +206,11 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
                 <label htmlFor="hours-time">
                   На какое время ставим задачу?
                 </label>
-                <input
-                  id="hours-time"
-                  type="time"
-                  name="hours-time"
-                  required={!autoTaskTime}
-                  placeholder="0"
-                  min={0}
-                  max={23}
-                  maxLength={2}
-                  value={createTime}
-                  style={{ width: "110px" }}
-                  onChange={(event) => setCreateTime(event.target.value)}
+                <TimeInput
+                  name="createTime"
+                  time={createTime}
+                  setTime={setCreateTime}
                 />
-                {/* <label htmlFor="minutes-time">Минуты</label>
-                <input
-                  id="minutes-time"
-                  type="time"
-                  min={0}
-                  required={!autoTaskTime}
-                  value={createTime.minutes}
-                  onChange={(event) =>
-                    setCreateTime((prev) => ({
-                      ...prev,
-                      minutes: event.target.value,
-                    }))
-                  }
-                  max={59}
-                  maxLength={2}
-                  name="minutes-time"
-                  placeholder="0"
-                /> */}
               </div>
             )}
           </div>

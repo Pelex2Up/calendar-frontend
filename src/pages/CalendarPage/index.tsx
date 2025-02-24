@@ -17,6 +17,7 @@ import {
   useGetPaperParamsMutation,
   useGetTasksListQuery,
   useMoveTaskMutation,
+  useResizeTaskMutation,
   useResizeWorkTimeMutation,
 } from "../../api/calendarServices";
 import { ModalCreateTask } from "./components/modalCreateTask";
@@ -36,10 +37,10 @@ interface IOnItemResize {
   edge: "right" | "left";
 }
 
-interface Message {
-  name: string;
-  message: string;
-}
+// interface Message {
+//   name: string;
+//   message: string;
+// }
 
 export const CalendarPage: FC = () => {
   const [containerHeight, setContainerHeight] = useState(0);
@@ -65,6 +66,8 @@ export const CalendarPage: FC = () => {
     useGetPaperParamsMutation();
   const [moveTask, { isLoading: movingTask }] = useMoveTaskMutation();
   const [resizeTask, { isLoading: resizingTask }] = useResizeWorkTimeMutation();
+  const [resizeCalendarTask, { isLoading: resizingCalendarTask }] =
+    useResizeTaskMutation();
   const dispatch = useAppDispatch();
   const [zoomUnit, setZoomUnit] = useState<string>("hour");
   const [show, setShow] = useState<boolean>(false);
@@ -154,6 +157,7 @@ export const CalendarPage: FC = () => {
         calendarData.listOfMachinesWithData
           .flatMap((machine) =>
             machine.listOfOrders.map((task) => ({
+              isTimeTask: task.isTimeTask,
               id: task.id,
               group: task.machineId,
               title: task.name,
@@ -204,6 +208,7 @@ export const CalendarPage: FC = () => {
       const calendarItems: CalendarDataItemT[] = data.listOfMachinesWithData
         .flatMap((machine) =>
           machine.listOfOrders.map((task) => ({
+            isTimeTask: task.isTimeTask,
             id: task.id,
             group: task.machineId,
             title: task.name,
@@ -216,11 +221,11 @@ export const CalendarPage: FC = () => {
               : false,
             canMove: task.canMove,
             description: task.description,
-            className: "custom-class", // НАСТРОИТЬ!!!
+            // className: "custom-class", // НАСТРОИТЬ!!!
             bgColor: task.hexColor,
-            selectedBgColor: task.hexColor, // если залочена задача, то бэкграунд красный, иначе из джейсона
-            color: "#000000", // НАСТРОИТЬ!!!
-            itemProps: {}, // Дополнительные свойства, если нужно
+            selectedBgColor: task.hexColor,
+            color: "#000000",
+            // itemProps: {}, // Дополнительные свойства, если нужно
           }))
         )
         .sort((a, b) => {
@@ -253,6 +258,7 @@ export const CalendarPage: FC = () => {
           // Создаем новые элементы для обновленных машин
           const newItems = updatedMachines.flatMap((machine) =>
             machine.listOfOrders.map((task) => ({
+              isTimeTask: task.isTimeTask,
               id: task.id,
               group: task.machineId,
               title: task.name,
@@ -321,16 +327,34 @@ export const CalendarPage: FC = () => {
   const sendResizeTask = useCallback(
     debounce((task: CalendarDataItemT) => {
       if (groups) {
-        resizeTask({
-          userId: Number(userId),
-          taskId: task.id,
-          machineId: Number(task.group),
-          unixStartTime: task.start_time / 1000,
-          unixEndTime: task.end_time / 1000 - 300,
-        })
-          .unwrap()
-          .then((data) => toast.success(data.optionalAlertMessage))
-          .catch((err) => toast.error(err.data.optionalAlertMessage));
+        if (task.isTimeTask) {
+          resizeTask({
+            userId: Number(userId),
+            taskId: task.id,
+            machineId: Number(task.group),
+            unixStartTime: task.start_time / 1000,
+            unixEndTime:
+              task.start_time === task.end_time
+                ? task.start_time / 1000
+                : task.end_time / 1000 - 300,
+          })
+            .unwrap()
+            .then((data) => toast.success(data.optionalAlertMessage))
+            .catch((err) => toast.error(err.data.optionalAlertMessage));
+        } else {
+          resizeCalendarTask({
+            userId: Number(userId),
+            taskId: task.id,
+            unixStartTime: task.start_time / 1000,
+            unixEndTime:
+              task.start_time === task.end_time
+                ? task.start_time / 1000
+                : task.end_time / 1000 - 300,
+          })
+            .unwrap()
+            .then((data) => toast.success(data.optionalAlertMessage))
+            .catch((err) => toast.error(err.data.optionalAlertMessage));
+        }
       }
     }, 500),
     [userId, groups]
@@ -338,7 +362,7 @@ export const CalendarPage: FC = () => {
 
   const dragItem = (dragParams: OnItemDragObjectMove | IOnItemResize) => {
     if (dragParams.eventType === "move") {
-      const updatedItems = items.map((item, index) => {
+      const updatedItems = items.map((item) => {
         if (item.id === dragParams.itemId) {
           return {
             ...item,
@@ -450,7 +474,11 @@ export const CalendarPage: FC = () => {
         padding: "1rem",
       }}
     >
-      {(isLoading || isFetching || movingTask || resizingTask) && <Loader />}
+      {(isLoading ||
+        isFetching ||
+        movingTask ||
+        resizingTask ||
+        resizingCalendarTask) && <Loader />}
       <div style={{ padding: "0 30px 0 0" }}>
         <motion.div
           layout
@@ -568,7 +596,17 @@ export const CalendarPage: FC = () => {
                       }
                     >
                       {item.name +
-                        `${wideList ? ` | ${item.description}` : ""}`}
+                        `${
+                          wideList
+                            ? ` | ${
+                                item.isProcessing
+                                  ? item.description +
+                                    " | " +
+                                    item.publishedDateTimeInfo
+                                  : item.description
+                              }`
+                            : ""
+                        }`}
                     </span>
                     {item.isCompleted ? (
                       <svg
@@ -660,6 +698,7 @@ export const CalendarPage: FC = () => {
             stackItems={true}
             onItemContextMenu={(itemId) => contextClick(Number(itemId))}
             onZoom={(context, unit) => {
+              console.log(context);
               setZoomUnit(unit);
             }}
             minZoom={6 * 60 * 60 * 1000} // 6 hours

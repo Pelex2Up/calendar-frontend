@@ -1,4 +1,4 @@
-import { FC, FormEvent, FormEventHandler, useEffect, useState } from "react";
+import { FC, FormEvent, useEffect, useState } from "react";
 import { Modal } from "../../../components/Modal";
 import "./componentsCalendar.css";
 import { DayPicker } from "react-day-picker";
@@ -10,6 +10,7 @@ import { selectUser } from "../../../selectors";
 import toast from "react-hot-toast";
 import { Loader } from "../../../components/Loader";
 import moment from "moment";
+import { TimeInput } from "../../../components/common/TimeInput";
 
 interface ICreateTaskModal {
   isOpen: boolean;
@@ -154,7 +155,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
 
         <div className="wrapper-time">
           <label htmlFor="hours">Время на выполнение:</label>
-          <input
+          {/* <input
             id="hours"
             type="time"
             required
@@ -163,7 +164,8 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
             value={taskTime}
             onChange={(event) => setTaskTime(event.target.value)}
             name="taskTime"
-          />
+          /> */}
+          <TimeInput name="time" time={taskTime} setTime={setTaskTime} />
         </div>
         <div className="wrapper-selector">
           <label htmlFor="machine">Машина:</label>
@@ -176,7 +178,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
               updateField("machine", Number(event.target.value))
             }
           >
-            {machines.map((machine, index) => (
+            {machines.map((machine) => (
               <option value={machine.Value} key={machine.Value}>
                 {machine.Key}
               </option>
@@ -192,7 +194,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
             value={selectedState.material}
             onChange={(e) => updateField("material", Number(e.target.value))}
           >
-            {materials.map((material, index) => (
+            {materials.map((material) => (
               <option value={material.Value} key={material.Value}>
                 {material.Key}
               </option>
@@ -333,34 +335,11 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
                 <label htmlFor="hours-time">
                   На какое время ставим задачу?
                 </label>
-                <input
-                  id="hours-time"
-                  type="time"
-                  name="hours-time"
-                  required={!autoTaskTime}
-                  placeholder="0"
-                  value={createTime}
-                  style={{ width: "110px" }}
-                  onChange={(event) => setCreateTime(event.target.value)}
+                <TimeInput
+                  name="autoTaskTime"
+                  time={createTime}
+                  setTime={setCreateTime}
                 />
-                {/* <label htmlFor="minutes-time">Минуты</label>
-                <input
-                  id="minutes-time"
-                  type="time"
-                  min={0}
-                  required={!autoTaskTime}
-                  value={createTime.minutes}
-                  onChange={(event) =>
-                    setCreateTime((prev) => ({
-                      ...prev,
-                      minutes: event.target.value,
-                    }))
-                  }
-                  max={59}
-                  maxLength={2}
-                  name="minutes-time"
-                  placeholder="0"
-                /> */}
               </div>
             )}
           </div>

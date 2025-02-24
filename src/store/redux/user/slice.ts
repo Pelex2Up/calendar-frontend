@@ -16,9 +16,9 @@ export const sliceUser = createSlice({
   name: "user",
   initialState,
   reducers: {
-    authUserState: (state, action) => {
-      state = action.payload;
-    },
+    // authUserState: (state, action) => {
+    //   state = action.payload;
+    // },
     authState: (state, action) => {
       state.authState = action.payload;
     },
@@ -40,6 +40,6 @@ export const sliceUser = createSlice({
   },
 });
 
-export const { auth, role, id, orgId, logoutState, authState, authUserState } =
+export const { auth, role, id, orgId, logoutState, authState } =
   sliceUser.actions;
 export const authReduce = sliceUser.reducer;

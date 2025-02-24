@@ -14,6 +14,10 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    watch: { usePolling: true },
+    host: true,
+    strictPort: true,
+    port: 3000,
   },
   plugins: [react()],
 });

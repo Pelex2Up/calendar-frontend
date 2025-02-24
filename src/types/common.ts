@@ -27,6 +27,7 @@ export type CalendarDataItemT = TimelineItemBase<number> & {
   selectedBgColor?: string;
   color?: string;
   itemProps?: HTMLProps<HTMLDivElement>;
+  isTimeTask: boolean;
 };
 
 export type TimelineProps = ReactCalendarTimelineProps<
