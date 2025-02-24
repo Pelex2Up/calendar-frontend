@@ -86,6 +86,16 @@ export const CalendarPage: FC = () => {
   const [infoModal, setInfoModal] = useState<boolean>(false);
   const [selectedTaskId, setSelectedTaskId] = useState<IListTask>();
   const [date, setDate] = useState(new Date());
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [isBusy, setIsBusy] = useState<boolean>(false);
+
+  const handleMouseDown = () => {
+    setIsDragging(true);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -295,6 +305,15 @@ export const CalendarPage: FC = () => {
       console.error("EventSource connection failed:", error);
       eventSource.close();
     };
+
+    eventSource.addEventListener("updateBusyStaus", (event: MessageEvent) => {
+      const data: { lockUi: boolean; optionalMessage: string } = JSON.parse(
+        event.data
+      );
+      setIsBusy(data.lockUi);
+      if (isBusy) toast.loading(data.optionalMessage, { duration: 800 });
+    });
+
     eventSource.onopen = () => {
       console.info("EVENT CONNECTED SUCCESSFULY");
     };
@@ -306,57 +325,63 @@ export const CalendarPage: FC = () => {
   }, [userId]);
 
   const sendMoveTask = useCallback(
-    debounce((dragParams) => {
-      if (groups) {
-        const targetGroup = groups[dragParams.newGroupOrder].id;
+    debounce(
+      (dragParams) => {
+        if (groups) {
+          const targetGroup = groups[dragParams.newGroupOrder].id;
 
-        moveTask({
-          userId: userId,
-          toMachineId: Number(targetGroup),
-          newTimeStamp: dragParams.time / 1000,
-          taskId: Number(dragParams.itemId),
-        })
-          .unwrap()
-          .then((data) => toast.success(data.optionalAlertMessage))
-          .catch((err) => toast.error(err.data.optionalAlertMessage));
-      }
-    }, 500),
-    [userId, groups]
-  );
-
-  const sendResizeTask = useCallback(
-    debounce((task: CalendarDataItemT) => {
-      if (groups) {
-        if (task.isTimeTask) {
-          resizeTask({
-            userId: Number(userId),
-            taskId: task.id,
-            machineId: Number(task.group),
-            unixStartTime: task.start_time / 1000,
-            unixEndTime:
-              task.start_time === task.end_time
-                ? task.start_time / 1000
-                : task.end_time / 1000 - 300,
-          })
-            .unwrap()
-            .then((data) => toast.success(data.optionalAlertMessage))
-            .catch((err) => toast.error(err.data.optionalAlertMessage));
-        } else {
-          resizeCalendarTask({
-            userId: Number(userId),
-            taskId: task.id,
-            unixStartTime: task.start_time / 1000,
-            unixEndTime:
-              task.start_time === task.end_time
-                ? task.start_time / 1000
-                : task.end_time / 1000 - 300,
+          moveTask({
+            userId: userId,
+            toMachineId: Number(targetGroup),
+            newTimeStamp: dragParams.time / 1000,
+            taskId: Number(dragParams.itemId),
           })
             .unwrap()
             .then((data) => toast.success(data.optionalAlertMessage))
             .catch((err) => toast.error(err.data.optionalAlertMessage));
         }
-      }
-    }, 500),
+      },
+      isDragging ? 5000 : 500
+    ),
+    [userId, groups]
+  );
+
+  const sendResizeTask = useCallback(
+    debounce(
+      (task: CalendarDataItemT) => {
+        if (groups) {
+          if (task.isTimeTask) {
+            resizeTask({
+              userId: Number(userId),
+              taskId: task.id,
+              machineId: Number(task.group),
+              unixStartTime: task.start_time / 1000,
+              unixEndTime:
+                task.start_time === task.end_time
+                  ? task.start_time / 1000
+                  : task.end_time / 1000 - 300,
+            })
+              .unwrap()
+              .then((data) => toast.success(data.optionalAlertMessage))
+              .catch((err) => toast.error(err.data.optionalAlertMessage));
+          } else {
+            resizeCalendarTask({
+              userId: Number(userId),
+              taskId: task.id,
+              unixStartTime: task.start_time / 1000,
+              unixEndTime:
+                task.start_time === task.end_time
+                  ? task.start_time / 1000
+                  : task.end_time / 1000 - 300,
+            })
+              .unwrap()
+              .then((data) => toast.success(data.optionalAlertMessage))
+              .catch((err) => toast.error(err.data.optionalAlertMessage));
+          }
+        }
+      },
+      isDragging ? 5000 : 500
+    ),
     [userId, groups]
   );
 
@@ -684,6 +709,8 @@ export const CalendarPage: FC = () => {
           borderRadius: "1rem",
           overflow: "hidden",
         }}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
       >
         {/* <div>{date?.toLocaleTimeString()}</div> */}
         {groups.length > 0 && dragItem && itemRenderer && (
