@@ -13,6 +13,9 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  @media screen and (max-width: 1024px) {
+    display: none;
+  }
 }
 
 .rightBlock {
@@ -22,6 +25,10 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+  @media screen and (max-width: 1024px) {
+    width: 100%;
+  }
 }
 
 .form {
