@@ -723,7 +723,7 @@ export const CalendarPage: FC = () => {
             onItemDrag={dragItem}
             defaultTimeStart={start}
             defaultTimeEnd={end}
-            stackItems={true}
+            // stackItems={true}
             onItemContextMenu={(itemId) => contextClick(Number(itemId))}
             onZoom={(context, unit) => {
               console.log(context);
