@@ -28,6 +28,15 @@ export type CalendarDataItemT = TimelineItemBase<number> & {
   color?: string;
   itemProps?: HTMLProps<HTMLDivElement>;
   isTimeTask: boolean;
+  minutes?: number;
+  hours?: number;
+  name?: string;
+  isLocked?: boolean;
+  optionalComment?: string;
+  machineId?: number;
+  isProcessing?: boolean;
+  isWaiting?: boolean;
+  isCompleted?: boolean;
 };
 
 export type TimelineProps = ReactCalendarTimelineProps<

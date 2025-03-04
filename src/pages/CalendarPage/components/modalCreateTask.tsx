@@ -55,8 +55,8 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
     format: formatArray ? formatArray[0].Value : undefined,
   });
   const [publish, setPublish] = useState<boolean>(false);
-  const [taskTime, setTaskTime] = useState<string>("00:00");
-  const [createTime, setCreateTime] = useState<string>("00:00");
+  const [taskTime, setTaskTime] = useState<string>(":");
+  const [createTime, setCreateTime] = useState<string>(":");
   const [createTask, { isLoading }] = useCreateNewTaskMutation();
 
   useEffect(() => {

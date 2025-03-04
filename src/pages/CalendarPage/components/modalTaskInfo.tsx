@@ -26,10 +26,11 @@ export const ModalTaskInfo: FC<IInfoTaskModal> = ({
   const [lockTask] = useLockTaskMutation();
   const [taskName, setTaskName] = useState<string>("");
   const [comment, setComment] = useState<string>("");
+  // console.log(task);
 
   useEffect(() => {
     setTaskName(task.name);
-    setComment(task.optionalComment);
+    setComment(task.optionalComment || "");
   }, [task]);
 
   const submitFormData = (event: FormEvent) => {

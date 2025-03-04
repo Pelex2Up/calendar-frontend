@@ -15,7 +15,7 @@
   background-color: #85837f;
 }
 
-div[data-testid='sidebarHeader'] {
+div[data-testid="sidebarHeader"] {
   background-color: #85837f;
 }
 
@@ -91,4 +91,31 @@ div[data-testid='sidebarHeader'] {
   transition: all ease-in 0.2s;
   border-radius: 8px;
   padding: 10px;
+}
+
+.clock-timer {
+  /* font: ; */
+  font-weight: 700;
+  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.headerSidebar {
+  flex-direction: column;
+  gap: 10px;
+}
+
+@keyframes blinker {
+  0%,
+  100% {
+    opacity: 1; /* Прозрачный символ */
+  }
+  50% {
+    opacity: 0; /* Скрытый символ */
+  }
+}
+
+.blinking {
+  animation: blinker 1.5s infinite;
 }

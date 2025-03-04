@@ -8,11 +8,16 @@ export const MainLayout: FC = () => {
   return (
     <>
       <Outlet />
-      <Toaster position="bottom-right" reverseOrder={false} />
-      <Tooltip
-        id="my-tooltip"
-        style={{ zIndex: "9999999" }}
+      <Toaster
+        position="bottom-right"
+        reverseOrder={false}
+        toastOptions={{ duration: 8000 }}
+        containerStyle={{
+          // position: "relative",
+          zIndex: "999999999",
+        }}
       />
+      <Tooltip id="my-tooltip" style={{ zIndex: "9999" }} />
     </>
   );
 };

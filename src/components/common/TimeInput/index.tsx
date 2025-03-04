@@ -17,21 +17,13 @@ export const TimeInput: FC<TimeInputT> = ({ name, time, setTime }) => {
   };
 
   const onKeyDownHour = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (
-      time.split(":")[0].length >= 3 &&
-      event.key !== "Backspace" &&
-      event.key !== "Delete"
-    ) {
+    if (time.split(":")[0].length >= 3 && /\d/.test(event.key)) {
       event.preventDefault();
     }
   };
 
   const onKeyDownMin = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (
-      time.split(":")[1].length >= 2 &&
-      event.key !== "Backspace" &&
-      event.key !== "Delete"
-    ) {
+    if (time.split(":")[0].length >= 2 && /\d/.test(event.key)) {
       event.preventDefault();
     }
   };
@@ -54,7 +46,7 @@ export const TimeInput: FC<TimeInputT> = ({ name, time, setTime }) => {
       <input
         type="number"
         id="minutes"
-        maxLength={2}
+        maxLength={3}
         placeholder="ММ"
         min={0}
         max={59}

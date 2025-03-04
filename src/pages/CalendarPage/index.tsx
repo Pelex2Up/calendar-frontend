@@ -4,6 +4,8 @@ import Timeline, {
   DateHeader,
   OnItemDragObjectMove,
   TimelineHeaders,
+  TimelineMarkers,
+  TodayMarker,
 } from "react-calendar-timeline";
 import "react-calendar-timeline/style.css";
 import moment from "moment";
@@ -36,11 +38,6 @@ interface IOnItemResize {
   time: number;
   edge: "right" | "left";
 }
-
-// interface Message {
-//   name: string;
-//   message: string;
-// }
 
 export const CalendarPage: FC = () => {
   const [containerHeight, setContainerHeight] = useState(0);
@@ -88,6 +85,7 @@ export const CalendarPage: FC = () => {
   const [date, setDate] = useState(new Date());
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isBusy, setIsBusy] = useState<boolean>(false);
+  const [sseConnection, setSseConnection] = useState<EventSource>();
 
   const handleMouseDown = () => {
     setIsDragging(true);
@@ -175,9 +173,12 @@ export const CalendarPage: FC = () => {
               end_time: moment(task.isoEndTime).valueOf(),
               breakTime: task.isTimeTask,
               canDelete: task.canDelete,
+              parentId: task.parentId || false,
               canResize: task.canStretch
                 ? ("both" as "both" | "left" | "right")
                 : false,
+              isProcessing: task.isProcessing,
+              isCompleted: task.isCompleted,
               description: task.description,
               canMove: task.canMove, // Пример, можно настроить
               // canResize: false, // Пример, можно настроить
@@ -206,67 +207,18 @@ export const CalendarPage: FC = () => {
   }, [tasks]);
 
   useEffect(() => {
-    const eventSource = new EventSource(`/sse/connect?userId=${userId}`);
+    const connectSSE = () => {
+      const eventSource = new EventSource(`/sse/connect?userId=${userId}`);
 
-    eventSource.addEventListener("updateList", (event: MessageEvent) => {
-      const data = JSON.parse(event.data);
-      setList(data);
-    });
+      eventSource.addEventListener("updateList", (event: MessageEvent) => {
+        const data = JSON.parse(event.data);
+        setList(data);
+      });
 
-    eventSource.addEventListener("updateCalendar", (event: MessageEvent) => {
-      const data: CalendarDataT = JSON.parse(event.data);
-      const calendarItems: CalendarDataItemT[] = data.listOfMachinesWithData
-        .flatMap((machine) =>
-          machine.listOfOrders.map((task) => ({
-            isTimeTask: task.isTimeTask,
-            id: task.id,
-            group: task.machineId,
-            title: task.name,
-            start_time: moment(task.isoStartTime).valueOf(),
-            end_time: moment(task.isoEndTime).valueOf(),
-            breakTime: task.isTimeTask,
-            canDelete: task.canDelete,
-            canResize: task.canStretch
-              ? ("both" as "both" | "left" | "right")
-              : false,
-            canMove: task.canMove,
-            description: task.description,
-            // className: "custom-class", // НАСТРОИТЬ!!!
-            bgColor: task.hexColor,
-            selectedBgColor: task.hexColor,
-            color: "#000000",
-            // itemProps: {}, // Дополнительные свойства, если нужно
-          }))
-        )
-        .sort((a, b) => {
-          // Сортируем по полю group (machineId)
-          if (a.group < b.group) return -1;
-          if (a.group > b.group) return 1;
-          return 0;
-        });
-      setItems(calendarItems);
-    });
-
-    eventSource.addEventListener(
-      "updateCalendarSelected",
-      (event: MessageEvent) => {
+      eventSource.addEventListener("updateCalendar", (event: MessageEvent) => {
         const data: CalendarDataT = JSON.parse(event.data);
-
-        // Получаем список обновленных машин
-        const updatedMachines = data.listOfMachinesWithData;
-
-        // Обновляем только те элементы, которые относятся к обновленным машинам
-        setItems((prevItems) => {
-          // Фильтруем старые элементы, удаляя те, которые относятся к обновленным машинам
-          const filteredItems = prevItems.filter(
-            (item) =>
-              !updatedMachines.some(
-                (machine) => machine.machineId === item.group
-              )
-          );
-
-          // Создаем новые элементы для обновленных машин
-          const newItems = updatedMachines.flatMap((machine) =>
+        const calendarItems: CalendarDataItemT[] = data.listOfMachinesWithData
+          .flatMap((machine) =>
             machine.listOfOrders.map((task) => ({
               isTimeTask: task.isTimeTask,
               id: task.id,
@@ -276,53 +228,122 @@ export const CalendarPage: FC = () => {
               end_time: moment(task.isoEndTime).valueOf(),
               breakTime: task.isTimeTask,
               canDelete: task.canDelete,
+              isProcessing: task.isProcessing,
+              isCompleted: task.isCompleted,
               canResize: task.canStretch
                 ? ("both" as "both" | "left" | "right")
                 : false,
               canMove: task.canMove,
               description: task.description,
-              className: "custom-class",
+              parentId: task.parentId || false,
+              // className: "custom-class", // НАСТРОИТЬ!!!
               bgColor: task.hexColor,
               selectedBgColor: task.hexColor,
               color: "#000000",
-              itemProps: {},
+              // itemProps: {}, // Дополнительные свойства, если нужно
             }))
-          );
-
-          // Объединяем отфильтрованные старые элементы с новыми
-          const updatedItems = [...filteredItems, ...newItems].sort((a, b) => {
+          )
+          .sort((a, b) => {
+            // Сортируем по полю group (machineId)
             if (a.group < b.group) return -1;
             if (a.group > b.group) return 1;
             return 0;
           });
+        setItems(calendarItems);
+      });
 
-          return updatedItems;
-        });
-      }
-    );
+      eventSource.addEventListener(
+        "updateCalendarSelected",
+        (event: MessageEvent) => {
+          const data: CalendarDataT = JSON.parse(event.data);
 
-    eventSource.onerror = (error: Event) => {
-      console.error("EventSource connection failed:", error);
-      eventSource.close();
-    };
+          // Получаем список обновленных машин
+          const updatedMachines = data.listOfMachinesWithData;
 
-    eventSource.addEventListener("updateBusyStaus", (event: MessageEvent) => {
-      const data: { lockUi: boolean; optionalMessage: string } = JSON.parse(
-        event.data
+          // Обновляем только те элементы, которые относятся к обновленным машинам
+          setItems((prevItems) => {
+            // Фильтруем старые элементы, удаляя те, которые относятся к обновленным машинам
+            const filteredItems = prevItems.filter(
+              (item) =>
+                !updatedMachines.some(
+                  (machine) => machine.machineId === item.group
+                )
+            );
+
+            // Создаем новые элементы для обновленных машин
+            const newItems = updatedMachines.flatMap((machine) =>
+              machine.listOfOrders.map((task) => ({
+                isTimeTask: task.isTimeTask,
+                id: task.id,
+                group: task.machineId,
+                title: task.name,
+                parentId: task.parentId || false,
+                start_time: moment(task.isoStartTime).valueOf(),
+                end_time: moment(task.isoEndTime).valueOf(),
+                breakTime: task.isTimeTask,
+                canDelete: task.canDelete,
+                isProcessing: task.isProcessing,
+                isCompleted: task.isCompleted,
+                canResize: task.canStretch
+                  ? ("both" as "both" | "left" | "right")
+                  : false,
+                canMove: task.canMove,
+                description: task.description,
+                className: "custom-class",
+                bgColor: task.hexColor,
+                selectedBgColor: task.hexColor,
+                color: "#000000",
+                itemProps: {},
+              }))
+            );
+
+            // Объединяем отфильтрованные старые элементы с новыми
+            const updatedItems = [...filteredItems, ...newItems].sort(
+              (a, b) => {
+                if (a.group < b.group) return -1;
+                if (a.group > b.group) return 1;
+                return 0;
+              }
+            );
+
+            return updatedItems;
+          });
+        }
       );
-      setIsBusy(data.lockUi);
-      if (data.lockUi) toast.loading(data.optionalMessage, { duration: 5000 });
-    });
 
-    eventSource.onopen = () => {
-      console.info("EVENT CONNECTED SUCCESSFULY");
+      eventSource.onerror = (error: Event) => {
+        console.error("EventSource connection failed:", error);
+        eventSource.close();
+      };
+
+      eventSource.addEventListener("updateBusyStaus", (event: MessageEvent) => {
+        const data: { lockUi: boolean; optionalMessage: string } = JSON.parse(
+          event.data
+        );
+        setIsBusy(data.lockUi);
+        if (data.lockUi)
+          toast.loading(data.optionalMessage, { duration: 5000 });
+      });
+
+      eventSource.onopen = () => {
+        console.log("EventSource connected!");
+        setSseConnection(eventSource);
+      };
+
+      return eventSource;
     };
+
+    if (!sseConnection || sseConnection.readyState === EventSource.CLOSED) {
+      setSseConnection(connectSSE());
+    }
 
     return () => {
-      console.info("CLOSING EventSource");
-      eventSource.close();
+      if (sseConnection) {
+        console.info("CLOSING EventSource");
+        sseConnection.close();
+      }
     };
-  }, [userId]);
+  }, [userId, sseConnection]);
 
   const sendMoveTask = useCallback(
     debounce(
@@ -432,7 +453,17 @@ export const CalendarPage: FC = () => {
 
   const contextClick = (itemId: number) => {
     const task = list.find((item) => item.id === itemId || -item.id === itemId);
-    if (task) showAddDetailsModal(task);
+    if (task) {
+      showAddDetailsModal(task);
+    } else {
+      const calendarItem = items.find((item) => item.id === itemId);
+      if (calendarItem && "parentId" in calendarItem) {
+        const item = list.find(
+          (item) => Number(calendarItem.parentId) === item.id
+        );
+        if (item) showAddDetailsModal(item);
+      }
+    }
   };
 
   const showAddTaskModal = () => {
@@ -447,9 +478,10 @@ export const CalendarPage: FC = () => {
       setDetailsModal(false);
       setInfoModal(false);
     }
-    if (task?.isWaiting) {
+    console.log(task);
+    if (task && "isWaiting" in task && task.isWaiting) {
       setDetailsModal(!detailsModal);
-    } else if (task?.isCompleted || task?.isProcessing) {
+    } else if (task && (task.isCompleted || task.isProcessing)) {
       setInfoModal(!infoModal);
     }
   };
@@ -469,8 +501,30 @@ export const CalendarPage: FC = () => {
         img.alt = "logo";
         img.setAttribute("data-img-id", "logotype");
         sidebarHeader.appendChild(img);
+        const timer = document.createElement("div");
+        timer.id = "current-time-clock";
+        timer.className = "clock-timer";
+        sidebarHeader.appendChild(timer);
       }
     }
+  }, []);
+
+  const updateClock = () => {
+    const timer = document.querySelector("#current-time-clock");
+    if (timer) {
+      const hours = moment().hours();
+      const minutes = moment().minutes();
+      const time = `${String(hours).padStart(
+        2,
+        "0"
+      )}<span class="blinking">:</span>${String(minutes).padStart(2, "0")}`;
+      timer.innerHTML = time;
+    }
+  };
+
+  useEffect(() => {
+    setInterval(updateClock, 3000);
+    updateClock();
   }, []);
 
   if (groups.length === 0) {
@@ -785,6 +839,18 @@ export const CalendarPage: FC = () => {
                 />
               )}
             </TimelineHeaders>
+            <TimelineMarkers>
+              <TodayMarker interval={20 * 1000}>
+                {({ styles, date }) => {
+                  const customStyles = {
+                    ...styles,
+                    backgroundColor: "red",
+                    zIndex: 99,
+                  };
+                  return <div style={customStyles} />;
+                }}
+              </TodayMarker>
+            </TimelineMarkers>
           </Timeline>
         )}
       </div>
