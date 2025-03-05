@@ -552,7 +552,11 @@ export const CalendarPage: FC = () => {
         resizingTask ||
         resizingCalendarTask ||
         isBusy) && <Loader />}
-      <div style={{ padding: "0 30px 0 0" }}>
+      <div
+        style={
+          window.innerWidth > 1280 ? { padding: "0 30px 0 0" } : { padding: 0 }
+        }
+      >
         <motion.div
           layout
           style={{
@@ -760,7 +764,6 @@ export const CalendarPage: FC = () => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       >
-        {/* <div>{date?.toLocaleTimeString()}</div> */}
         {groups.length > 0 && dragItem && itemRenderer && (
           <Timeline
             groups={groups}
@@ -770,19 +773,19 @@ export const CalendarPage: FC = () => {
             onItemDrag={dragItem}
             defaultTimeStart={start}
             defaultTimeEnd={end}
-            // stackItems={true}
             onItemContextMenu={(itemId) => contextClick(Number(itemId))}
             onZoom={(context, unit) => {
               console.log(context);
               setZoomUnit(unit);
             }}
-            minZoom={2 * 60 * 60 * 1000} // 2 hours
+            traditionalZoom
+            // minZoom={2 * 60 * 60 * 1000} // 2 hours
             maxZoom={7 * 24 * 60 * 60 * 1000} // 7 days
-            sidebarWidth={150}
+            sidebarWidth={window.innerWidth > 1280 ? 150 : 80}
             itemRenderer={itemRenderer}
             timeSteps={{
-              second: 0,
-              minute: 5,
+              second: 30,
+              minute: 15,
               hour: 1,
               day: 1,
               month: 1,
