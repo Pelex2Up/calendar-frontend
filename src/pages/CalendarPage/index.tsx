@@ -290,7 +290,7 @@ export const CalendarPage: FC = () => {
                 itemProps: {},
               }))
             );
-            
+
             const updatedItems = [...filteredItems, ...newItems].sort(
               (a, b) => {
                 if (a.group < b.group) return -1;
@@ -834,7 +834,7 @@ export const CalendarPage: FC = () => {
             </TimelineHeaders>
             <TimelineMarkers>
               <TodayMarker interval={20 * 1000}>
-                {({ styles, date }) => {
+                {({ styles }) => {
                   const customStyles = {
                     ...styles,
                     backgroundColor: "red",
