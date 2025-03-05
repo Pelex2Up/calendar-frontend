@@ -119,3 +119,7 @@ div[data-testid="sidebarHeader"] {
 .blinking {
   animation: blinker 1.5s infinite;
 }
+
+.custom-class {
+  
+}

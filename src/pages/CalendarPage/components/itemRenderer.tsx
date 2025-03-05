@@ -72,6 +72,14 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
             }
       )}
     >
+      {itemContext.canResizeLeft &&
+        itemContext.canResizeRight &&
+        itemContext.selected && (
+          <>
+            <div className="left-handle" />
+            <div className="right-handle" />
+          </>
+        )}
       <div
         style={{
           height: itemContext.dimensions.height,

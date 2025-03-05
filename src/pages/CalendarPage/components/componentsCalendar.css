@@ -59,7 +59,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   img {
     width: 50%;
     height: 50%;
@@ -125,4 +125,22 @@ input[type="number"]:hover,
 input[type="number"]:focus {
   appearance: none;
   -moz-appearance: textfield;
+}
+
+.left-handle,
+.right-handle {
+  position: absolute;
+  height: 100%;
+  width: 8px; /* Ширина площади для курсора */
+  top: 0;
+}
+
+.left-handle {
+  left: -3px;
+  cursor: ew-resize; /* Курсор для левого края */
+}
+
+.right-handle {
+  right: -3px;
+  cursor: ew-resize; /* Курсор для правого края */
 }
