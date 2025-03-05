@@ -4,6 +4,7 @@ import { TimelineProps } from "types/common";
 export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
   const { item, itemContext, getItemProps, getResizeProps } = props;
   const { right: rightResizeProps } = getResizeProps();
+  
   return (
     <div
       data-tooltip-id={item.breakTime ? "" : "my-tooltip"}

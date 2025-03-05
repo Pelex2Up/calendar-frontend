@@ -776,7 +776,7 @@ export const CalendarPage: FC = () => {
               console.log(context);
               setZoomUnit(unit);
             }}
-            minZoom={6 * 60 * 60 * 1000} // 6 hours
+            minZoom={2 * 60 * 60 * 1000} // 2 hours
             maxZoom={7 * 24 * 60 * 60 * 1000} // 7 days
             sidebarWidth={150}
             itemRenderer={itemRenderer}
@@ -820,17 +820,16 @@ export const CalendarPage: FC = () => {
                     )}`;
                 }}
               />
-              {zoomUnit === "hour" && (
-                <DateHeader
-                  height={40}
-                  unit="hour"
-                  labelFormat={(date) => {
-                    return `${moment(date[0].toISOString())
-                      .format("HH:mm")
-                      .toUpperCase()}`;
-                  }}
-                />
-              )}
+
+              <DateHeader
+                height={40}
+                unit="hour"
+                labelFormat={(date) => {
+                  return `${moment(date[0].toISOString())
+                    .format("HH:mm")
+                    .toUpperCase()}`;
+                }}
+              />
             </TimelineHeaders>
             <TimelineMarkers>
               <TodayMarker interval={20 * 1000}>

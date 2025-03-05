@@ -12,18 +12,25 @@ export const TimeInput: FC<TimeInputT> = ({ name, time, setTime }) => {
     if (data === "hour") {
       setTime(val + ":" + time.split(":")[1]);
     } else if (data === "min") {
-      setTime(time.split(":")[0] + ":" + val);
+      if (Number(val) < 60 && Number(val) >= 0) {
+        setTime(time.split(":")[0] + ":" + val);
+      }
     }
   };
 
-  const onKeyDownHour = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (time.split(":")[0].length >= 3 && /\d/.test(event.key)) {
-      event.preventDefault();
-    }
-  };
+  // const onKeyDownHour = (event: KeyboardEvent<HTMLInputElement>) => {
+  //   if (time.split(":")[0].length >= 3 && /\d/.test(event.key)) {
+  //     event.preventDefault();
+  //   }
+  // };
 
-  const onKeyDownMin = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (time.split(":")[1].length >= 2 && /\d/.test(event.key)) {
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (
+      !/\d/.test(event.key) &&
+      event.key !== "Delete" &&
+      event.key !== "Backspace" &&
+      event.key !== "Tab"
+    ) {
       event.preventDefault();
     }
   };
@@ -31,26 +38,30 @@ export const TimeInput: FC<TimeInputT> = ({ name, time, setTime }) => {
   return (
     <div className={styles.timeInput} id={name}>
       <input
-        type="number"
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
         id="hours"
         placeholder="ЧЧ"
-        maxLength={3}
-        min={0}
-        max={999}
+        maxLength={2}
+        min={"00"}
+        max={"99"}
         required
-        onKeyDown={onKeyDownHour}
+        onKeyDown={onKeyDown}
         value={time.split(":")[0]}
         onChange={(e) => updateTime(e.target.value, "hour")}
       />
       <span>:</span>
       <input
-        type="number"
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
         id="minutes"
-        maxLength={3}
+        maxLength={2}
         placeholder="ММ"
-        min={0}
-        max={59}
-        onKeyDown={onKeyDownMin}
+        min={"00"}
+        max={"59"}
+        onKeyDown={onKeyDown}
         required
         value={time.split(":")[1]}
         onChange={(e) => updateTime(e.target.value, "min")}
