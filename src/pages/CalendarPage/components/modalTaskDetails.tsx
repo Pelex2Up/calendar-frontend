@@ -114,7 +114,7 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
       name: taskName,
       hours: Number(taskTime.split(":")[0]),
       minutes: Number(taskTime.split(":")[1]),
-      machineId: task.machineId,
+      machineId: selectedState.machine,
       optionalComment: comment,
       automaticPublishing: autoTime,
       lockTask: lock,
@@ -195,7 +195,6 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
           <select
             id="machine"
             required
-            disabled
             value={selectedState.machine}
             onChange={(e) => updateField("machine", Number(e.target.value))}
           >
