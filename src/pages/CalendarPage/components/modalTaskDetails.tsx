@@ -13,12 +13,16 @@ import { selectUser } from "../../../selectors";
 import toast from "react-hot-toast";
 import moment from "moment";
 import { TimeInput } from "../../../components/common/TimeInput";
+import { ISelectedCreate } from "./modalCreateTask";
 
 interface IDetailsTaskModal {
   isOpen: boolean;
   onClose: () => void;
-  machines: any[];
   task: IListTask;
+  machines: any[];
+  materials: any[];
+  formats: { Item1: number; Item2: { Key: string; Value: number }[] }[];
+  density: { Item1: number; Item2: number[] }[];
 }
 
 export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
@@ -26,6 +30,9 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
   onClose,
   task,
   machines,
+  materials,
+  formats,
+  density,
 }) => {
   const [deleteTask] = useDeleteTaskMutation();
   const [publishTask] = usePublishTaskMutation();
@@ -36,10 +43,50 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
-  const [comment, setComment] = useState<string>("");
+  const [comment, setComment] = useState<string>(task.optionalComment);
   const [autoTaskTime, setAutoTaskTime] = useState<boolean>(true);
   const [taskTime, setTaskTime] = useState<string>("00:00");
   const [createTime, setCreateTime] = useState<string>("00:00");
+  const [densityArray, setDensityArray] = useState<number[]>();
+  const [formatArray, setFormatArray] =
+    useState<{ Key: string; Value: number }[]>();
+  const [selectedState, setSelectedState] = useState<ISelectedCreate>({
+    machine: task.machineId,
+    material: materials[0].Value,
+    density: densityArray ? densityArray[0] : undefined,
+    format: formatArray ? formatArray[0].Value : undefined,
+  });
+
+  const updateField = (field: keyof ISelectedCreate, value: number) => {
+    setSelectedState((prevState) => ({
+      ...prevState,
+      [field]: value, // Изменяем только указанное поле
+    }));
+  };
+
+  useEffect(() => {
+    if (selectedState.material && density) {
+      const updatedArray = density.find(
+        (item) => item.Item1 === selectedState.material
+      );
+
+      if (updatedArray && updatedArray.Item2.length > 0) {
+        setDensityArray(updatedArray.Item2);
+        updateField("density", updatedArray.Item2[0]);
+      }
+    }
+
+    if (selectedState.material && formats) {
+      const updatedArray = formats.find(
+        (item) => item.Item1 === selectedState.material
+      );
+
+      if (updatedArray && updatedArray.Item2.length > 0) {
+        setFormatArray(updatedArray.Item2);
+        updateField("format", updatedArray.Item2[0].Value);
+      }
+    }
+  }, [density, formats, selectedState.material]);
 
   useEffect(() => {
     if (taskName !== task.name) {
@@ -103,8 +150,28 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
       .catch((err) => toast.error(err.data.optionalAlertMessage));
   };
 
+  const closeModal = async () => {
+    setSelectedState({
+      machine: task.machineId,
+      material: materials[0].Value,
+      density: densityArray ? densityArray[0] : undefined,
+      format: formatArray ? formatArray[0].Value : undefined,
+    });
+    setCreateTime("00:00");
+    setTaskTime(
+      `${String(task.hours).padStart(2, "0")}:${String(task.minutes).padStart(
+        2,
+        "0"
+      )}`
+    );
+    setComment(task.optionalComment);
+    setLock(false);
+    setTaskName(task.name);
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={closeModal}>
       <form className="wrapper" onSubmit={submitFormData}>
         <h2>Редактирование задачи</h2>
         <label htmlFor="title">Название задачи:</label>
@@ -120,13 +187,18 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
         </div>
 
         <div className="wrapper-time">
-          {/* <label htmlFor="hours">Часы</label> */}
           <label htmlFor="hours">Время на выполнение*:</label>
           <TimeInput name="time" setTime={setTaskTime} time={taskTime} />
         </div>
         <div className="wrapper-selector">
           <label htmlFor="machine">Машина:</label>
-          <select id="machine" required disabled value={task.machineId}>
+          <select
+            id="machine"
+            required
+            disabled
+            value={selectedState.machine}
+            onChange={(e) => updateField("machine", Number(e.target.value))}
+          >
             {machines.map((machine) => (
               <option value={machine.Value} key={machine.Value}>
                 {machine.Key}
@@ -134,6 +206,82 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
             ))}
           </select>
         </div>
+        {/* <div className="wrapper-selector">
+          <label htmlFor="material">Материал:</label>
+          <select
+            id="material"
+            required
+            defaultValue={"Выберите материал"}
+            value={selectedState.material}
+            onChange={(e) => updateField("material", Number(e.target.value))}
+          >
+            {materials.map((material) => (
+              <option value={material.Value} key={material.Value}>
+                {material.Key}
+              </option>
+            ))}
+          </select>
+        </div>
+        {densityArray && densityArray?.length > 0 && (
+          <>
+            <div className="wrapper-selector">
+              <label htmlFor="density">Плотность:</label>
+              <select
+                id="density"
+                required
+                value={selectedState.density}
+                onChange={(event) =>
+                  updateField("density", Number(event.target.value))
+                }
+              >
+                <option
+                  value=""
+                  disabled
+                  selected
+                  hidden
+                  style={{ color: "#9c9c9c" }}
+                >
+                  Выберите плотность
+                </option>
+                {densityArray.map((el, index) => (
+                  <option value={el} key={el + index}>
+                    {el}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
+        )}
+        {formatArray && formatArray?.length > 0 && (
+          <>
+            <div className="wrapper-selector">
+              <label htmlFor="format">Формат:</label>
+              <select
+                required
+                id="format"
+                value={selectedState.format}
+                onChange={(event) =>
+                  updateField("format", Number(event.target.value))
+                }
+              >
+                <option
+                  value=""
+                  disabled
+                  selected
+                  hidden
+                  style={{ color: "#9c9c9c" }}
+                >
+                  Выберите формат
+                </option>
+                {formatArray.map((el, index) => (
+                  <option value={el.Value} key={el.Value + index}>
+                    {el.Key}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
+        )} */}
         <div className="wrapper-comment">
           <label htmlFor="comment">Комментарий печатнику:</label>
           <textarea

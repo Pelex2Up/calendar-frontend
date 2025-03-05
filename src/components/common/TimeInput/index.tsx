@@ -11,7 +11,7 @@ export const TimeInput: FC<TimeInputT> = ({ name, time, setTime }) => {
   const updateTime = (val: string, data: "hour" | "min") => {
     if (data === "hour") {
       setTime(val + ":" + time.split(":")[1]);
-    } else {
+    } else if (data === "min") {
       setTime(time.split(":")[0] + ":" + val);
     }
   };
@@ -23,7 +23,7 @@ export const TimeInput: FC<TimeInputT> = ({ name, time, setTime }) => {
   };
 
   const onKeyDownMin = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (time.split(":")[0].length >= 2 && /\d/.test(event.key)) {
+    if (time.split(":")[1].length >= 2 && /\d/.test(event.key)) {
       event.preventDefault();
     }
   };

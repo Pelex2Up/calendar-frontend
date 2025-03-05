@@ -180,8 +180,7 @@ export const CalendarPage: FC = () => {
               isProcessing: task.isProcessing,
               isCompleted: task.isCompleted,
               description: task.description,
-              canMove: task.canMove, // Пример, можно настроить
-              // canResize: false, // Пример, можно настроить
+              canMove: task.canMove,
               className: "custom-class", // Пример, можно настроить
               bgColor: task.hexColor,
               selectedBgColor: task.hexColor,
@@ -190,7 +189,7 @@ export const CalendarPage: FC = () => {
             }))
           )
           .sort((a, b) => {
-            // Сортируем по полю group (machineId)
+            // Сортируем по полю group (machineId) !!!! НЕ УБИРАТЬ
             if (a.group < b.group) return -1;
             if (a.group > b.group) return 1;
             return 0;
@@ -244,7 +243,7 @@ export const CalendarPage: FC = () => {
             }))
           )
           .sort((a, b) => {
-            // Сортируем по полю group (machineId)
+            // Сортируем по полю group (machineId) !!! НЕ УБИРАТЬ
             if (a.group < b.group) return -1;
             if (a.group > b.group) return 1;
             return 0;
@@ -257,12 +256,8 @@ export const CalendarPage: FC = () => {
         (event: MessageEvent) => {
           const data: CalendarDataT = JSON.parse(event.data);
 
-          // Получаем список обновленных машин
           const updatedMachines = data.listOfMachinesWithData;
-
-          // Обновляем только те элементы, которые относятся к обновленным машинам
           setItems((prevItems) => {
-            // Фильтруем старые элементы, удаляя те, которые относятся к обновленным машинам
             const filteredItems = prevItems.filter(
               (item) =>
                 !updatedMachines.some(
@@ -270,7 +265,6 @@ export const CalendarPage: FC = () => {
                 )
             );
 
-            // Создаем новые элементы для обновленных машин
             const newItems = updatedMachines.flatMap((machine) =>
               machine.listOfOrders.map((task) => ({
                 isTimeTask: task.isTimeTask,
@@ -296,8 +290,7 @@ export const CalendarPage: FC = () => {
                 itemProps: {},
               }))
             );
-
-            // Объединяем отфильтрованные старые элементы с новыми
+            
             const updatedItems = [...filteredItems, ...newItems].sort(
               (a, b) => {
                 if (a.group < b.group) return -1;
@@ -362,7 +355,7 @@ export const CalendarPage: FC = () => {
             .catch((err) => toast.error(err.data.optionalAlertMessage));
         }
       },
-      isDragging ? 5000 : 500
+      isDragging ? 5000 : 1200
     ),
     [userId, groups]
   );
@@ -401,7 +394,7 @@ export const CalendarPage: FC = () => {
           }
         }
       },
-      isDragging ? 5000 : 500
+      isDragging ? 5000 : 1200
     ),
     [userId, groups]
   );
@@ -869,6 +862,9 @@ export const CalendarPage: FC = () => {
         <ModalTaskDetails
           machines={paperParams.allMachinesWithIds}
           isOpen={detailsModal}
+          materials={paperParams.allPaperTypesAndValuesList}
+          formats={paperParams.allFormatSizesAndValuesList}
+          density={paperParams.allDensityListForEachPaperType}
           onClose={showAddDetailsModal}
           task={selectedTaskId}
         />
