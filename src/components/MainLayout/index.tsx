@@ -13,7 +13,6 @@ export const MainLayout: FC = () => {
         reverseOrder={false}
         toastOptions={{ duration: 8000 }}
         containerStyle={{
-          // position: "relative",
           zIndex: "999999999",
         }}
       />
