@@ -4,7 +4,6 @@ import { TimelineProps } from "types/common";
 export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
   const { item, itemContext, getItemProps, getResizeProps } = props;
   const { right: rightResizeProps } = getResizeProps();
-  
   return (
     <div
       data-tooltip-id={item.breakTime ? "" : "my-tooltip"}
@@ -51,7 +50,7 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
         itemContext.selected
           ? {
               style: {
-                background: `${item.selectedBgColor} !important`,
+                background: `${item.selectedBgColor}`,
                 color: item.color,
                 borderColor: item.breakTime ? item.selectedBgColor : "red",
                 borderStyle: "solid",
@@ -63,7 +62,7 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               style: {
                 background: item.breakTime
                   ? `repeating-linear-gradient(45deg, ${item.bgColor},${item.bgColor} 10px, transparent 10px, transparent 20px)`
-                  : item.bgColor,
+                  : `${item.bgColor}`,
                 color: item.color,
                 borderRadius: item.breakTime ? 0 : 4,
                 borderWidth: `1px`,

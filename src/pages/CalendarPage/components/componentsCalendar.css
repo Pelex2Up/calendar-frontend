@@ -131,7 +131,7 @@ input[type="number"]:focus {
 .right-handle {
   position: absolute;
   height: 100%;
-  width: 8px; /* Ширина площади для курсора */
+  width: 20px; /* Ширина площади для курсора */
   top: 0;
 }
 
