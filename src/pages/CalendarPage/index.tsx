@@ -370,10 +370,9 @@ export const CalendarPage: FC = () => {
             machineId: Number(task.group),
             unixStartTime: task.start_time / 1000,
             unixEndTime:
-              (task.end_time - task.start_time) / 1000 !== 300 &&
-              task.start_time !== task.end_time
+              (task.end_time - task.start_time) / 1000 !== 300
                 ? task.end_time / 1000 - 300
-                : task.end_time / 1000,
+                : task.start_time / 1000 + 300,
           })
             .unwrap()
             .then((data) => toast.success(data.optionalAlertMessage))
