@@ -622,6 +622,7 @@ export const CalendarPage: FC = () => {
                   padding: 0,
                   overflow: "scroll",
                 }}
+                className="tasks-list"
               >
                 {list.map((item, index) => (
                   <motion.li

@@ -120,6 +120,10 @@ div[data-testid="sidebarHeader"] {
   animation: blinker 1.5s infinite;
 }
 
-.custom-class {
-  
+.tasks-list::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+.tasks-list {
+  -ms-overflow-style: none;
 }
