@@ -124,6 +124,10 @@ div[data-testid="sidebarHeader"] {
   width: 0 !important;
 }
 
+.react-calendar-timeline .rct-sidebar .rct-sidebar-row {
+  text-align: center;
+}
+
 .tasks-list {
   -ms-overflow-style: none;
 }
