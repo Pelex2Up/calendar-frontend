@@ -50,7 +50,9 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
         itemContext.selected
           ? {
               style: {
-                background: `${item.selectedBgColor}`,
+                background: item.breakTime
+                  ? `repeating-linear-gradient(45deg, ${item.bgColor},${item.bgColor} 10px, transparent 10px, transparent 20px)`
+                  : `${item.bgColor}`,
                 color: item.color,
                 borderColor: item.breakTime ? item.selectedBgColor : "red",
                 borderStyle: "solid",
