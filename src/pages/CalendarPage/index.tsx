@@ -786,7 +786,7 @@ export const CalendarPage: FC = () => {
             itemRenderer={itemRenderer}
             timeSteps={{
               second: 30,
-              minute: 15,
+              minute: 10,
               hour: 1,
               day: 1,
               month: 1,
