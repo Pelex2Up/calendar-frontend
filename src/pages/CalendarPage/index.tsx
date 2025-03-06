@@ -369,10 +369,12 @@ export const CalendarPage: FC = () => {
             taskId: task.id,
             machineId: Number(task.group),
             unixStartTime: task.start_time / 1000,
-            unixEndTime:
-              (task.end_time - task.start_time) / 1000 !== 300
-                ? task.end_time / 1000 - 300
-                : task.start_time / 1000 + 300,
+            // рассчеты костылей для бэкенда
+            unixEndTime: task.end_time / 1000,
+            // unixEndTime:
+            //   (task.end_time - task.start_time) / 1000 !== 300
+            //     ? task.end_time / 1000 - 300
+            //     : task.start_time / 1000 + 300,
           })
             .unwrap()
             .then((data) => toast.success(data.optionalAlertMessage))
@@ -382,6 +384,7 @@ export const CalendarPage: FC = () => {
             userId: Number(userId),
             taskId: task.id,
             unixStartTime: task.start_time / 1000,
+            // рассчеты костылей для бэкенда
             unixEndTime:
               task.start_time === task.end_time
                 ? task.start_time / 1000
