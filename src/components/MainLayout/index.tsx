@@ -11,7 +11,7 @@ export const MainLayout: FC = () => {
       <Toaster
         position="bottom-right"
         reverseOrder={false}
-        toastOptions={{ duration: 8000 }}
+        toastOptions={{ duration: 4000 }}
         containerStyle={{
           zIndex: "999999999",
         }}
