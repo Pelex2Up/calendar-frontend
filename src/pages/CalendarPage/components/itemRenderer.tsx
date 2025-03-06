@@ -88,6 +88,7 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          overflow: "hidden",
           // lineHeight: itemContext.dimensions.height / 3,
         }}
       >
