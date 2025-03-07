@@ -113,6 +113,7 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               color: item.isLocked ? "#ffffff" : "#000000",
               fontWeight: "600",
               padding: "10px",
+              fontSize: '18px',
               margin: 0,
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
