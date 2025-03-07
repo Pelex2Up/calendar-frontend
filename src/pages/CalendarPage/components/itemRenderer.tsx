@@ -113,12 +113,12 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               color: item.isLocked ? "#ffffff" : "#000000",
               fontWeight: "bold",
               padding: "10px",
-              fontSize: '18px',
+              fontSize: "18px",
               margin: 0,
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
-              // transform: "rotate(-90deg)",
-              writingMode: "sideways-lr",
+              writingMode: "vertical-lr",
+              rotate: "180deg",
               lineHeight: `20px`,
             }}
           >
@@ -140,8 +140,8 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               textAlign: "center",
               textOverflow: "ellipsis",
               whiteSpace: "wrap",
-              // transform: "rotate(-90deg)",
-              writingMode: "sideways-lr",
+              writingMode: "vertical-lr",
+              rotate: "180deg",
               lineHeight: itemContext.dimensions.width > 100 ? `20px` : 0,
             }}
           >

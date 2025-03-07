@@ -573,12 +573,15 @@ export const CalendarPage: FC = () => {
     <div
       style={{
         position: "relative",
+        minWidth: "100vw",
         maxWidth: "100vw",
         width: "100%",
         minHeight: "100vh",
+        maxHeight: "100vh",
         height: "auto",
         display: "flex",
         gap: "1rem",
+        overflow: "hidden",
       }}
     >
       {(isLoading ||
@@ -738,7 +741,13 @@ export const CalendarPage: FC = () => {
                         </p>
                       </div>
                       {wideList && (
-                        <p style={{ margin: 0, color: "gray" }}>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: "14px",
+                            color: "#969696",
+                          }}
+                        >
                           {item.description}
                         </p>
                       )}

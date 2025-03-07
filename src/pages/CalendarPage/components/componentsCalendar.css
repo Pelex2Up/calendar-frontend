@@ -133,6 +133,7 @@ input[type="number"]:focus {
   height: 100%;
   width: 20px; /* Ширина площади для курсора */
   top: 0;
+  z-index: 90;
 }
 
 .left-handle {
@@ -141,6 +142,6 @@ input[type="number"]:focus {
 }
 
 .right-handle {
-  right: -3px;
+  right: -6px;
   cursor: ew-resize; /* Курсор для правого края */
 }
