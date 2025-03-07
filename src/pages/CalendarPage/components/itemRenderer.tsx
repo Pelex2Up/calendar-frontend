@@ -118,7 +118,7 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               whiteSpace: "nowrap",
               // transform: "rotate(-90deg)",
               writingMode: "sideways-lr",
-              lineHeight: `calc(${itemContext.dimensions.width / 2}px - 10px)`,
+              lineHeight: `20px`,
             }}
           >
             {item.breakTime ? "" : itemContext.title}

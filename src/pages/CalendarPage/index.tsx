@@ -667,7 +667,7 @@ export const CalendarPage: FC = () => {
                               width: "20px",
                               height: "20px",
                               borderRadius: "50%",
-                              background: "gray",
+                              background: item.hexColor,
                             }
                           : item.isWaiting
                           ? {
@@ -676,7 +676,7 @@ export const CalendarPage: FC = () => {
                               width: "20px",
                               height: "20px",
                               borderRadius: "50%",
-                              background: "orange",
+                              background: item.hexColor,
                             }
                           : {
                               minWidth: "20px",
@@ -684,7 +684,7 @@ export const CalendarPage: FC = () => {
                               width: "20px",
                               height: "0px",
                               borderRadius: "50%",
-                              background: "green",
+                              background: item.hexColor,
                             }
                       }
                     />
