@@ -4,6 +4,11 @@ import { TimelineProps } from "types/common";
 export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
   const { item, itemContext, getItemProps, getResizeProps } = props;
   const { right: rightResizeProps } = getResizeProps();
+
+  if (itemContext.selected) {
+    console.log(item);
+  }
+
   return (
     <div
       data-tooltip-id={item.breakTime ? "" : "my-tooltip"}
@@ -86,41 +91,66 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
         style={{
           height: itemContext.dimensions.height,
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
           alignItems: "center",
+          justifyContent: "center",
           overflow: "hidden",
-          // lineHeight: itemContext.dimensions.height / 3,
+          padding: "10px 5px",
+          position: "relative",
+          width: itemContext.dimensions.width,
+          lineHeight: 0,
         }}
       >
-        <p
-          style={{
-            maxWidth: "100%",
-            display: "block",
-            overflow: "hidden",
-            padding: "0 10px",
-            margin: "0 auto",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            lineHeight: `${itemContext.dimensions.height / 2}px `,
-          }}
-        >
-          {item.breakTime ? "" : itemContext.title}
-        </p>
-        <p
-          style={{
-            maxWidth: "100%",
-            display: "block",
-            overflow: "hidden",
-            margin: "0 auto",
-            padding: "0 10px",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            lineHeight: `${itemContext.dimensions.height / 2}px `,
-            // height: itemContext.dimensions.height / 2,
-          }}
-        >
-          {item.description && !item.breakTime ? item.description : ""}
-        </p>
+        <div style={{ height: itemContext.dimensions.height }}>
+          <p
+            style={{
+              height: itemContext.dimensions.height,
+              minHeight: itemContext.dimensions.height / 2,
+              // width: `calc(${itemContext.dimensions.height}px - 10px)`,
+              display: "inline-block",
+              overflow: "hidden",
+              textAlign: "center",
+              color: item.isLocked ? "#ffffff" : "#000000",
+              fontWeight: "600",
+              padding: "10px",
+              margin: 0,
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              // transform: "rotate(-90deg)",
+              writingMode: "sideways-lr",
+              lineHeight: `calc(${itemContext.dimensions.width / 2}px - 10px)`,
+            }}
+          >
+            {item.breakTime ? "" : itemContext.title}
+          </p>
+        </div>
+        <div style={{ height: itemContext.dimensions.height }}>
+          <span
+            style={{
+              height: itemContext.dimensions.height,
+              // width: `calc(${itemContext.dimensions.height}px - 20px)`,
+              minHeight: itemContext.dimensions.height / 2,
+              display: "inline-block",
+              padding: "10px 0",
+              margin: 0,
+              overflow: "hidden",
+              color: item.isLocked ? "#ffffff" : "#000000",
+              fontWeight: "600",
+              textAlign: "center",
+              textOverflow: "ellipsis",
+              whiteSpace: "wrap",
+              // transform: "rotate(-90deg)",
+              writingMode: "sideways-lr",
+              lineHeight: itemContext.dimensions.width > 100 ? `20px` : 0,
+            }}
+          >
+            {itemContext.dimensions.width > 100 &&
+            item.description &&
+            !item.breakTime
+              ? item.description
+              : ""}
+          </span>
+        </div>
       </div>
 
       {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null}

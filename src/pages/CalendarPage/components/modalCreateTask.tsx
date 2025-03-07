@@ -55,9 +55,21 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
     format: formatArray ? formatArray[0].Value : undefined,
   });
   const [publish, setPublish] = useState<boolean>(false);
-  const [taskTime, setTaskTime] = useState<string>(":");
-  const [createTime, setCreateTime] = useState<string>(":");
+  const [taskTime, setTaskTime] = useState<string>("00:00");
+  const [createTime, setCreateTime] = useState<string>("00:00");
   const [createTask, { isLoading }] = useCreateNewTaskMutation();
+
+  const closeModal = () => {
+    setCreateTime("00:00");
+    setTaskTime("00:00");
+    setPublish(false);
+    setAutoTaskTime(true);
+    setComment("");
+    setSelectedDate(undefined);
+    setLock(false);
+    setTaskName("");
+    onClose();
+  };
 
   useEffect(() => {
     if (createTime !== "00:00" && selectedDate) {
@@ -125,23 +137,15 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
       createTask({ userId: userId, newTaskFromPost: submitedData })
         .unwrap()
         .then((data) => {
-          setTaskName("");
-          setAutoTime(true);
-          setLock(false);
-          setSelectedDate(undefined);
-          setPublish(false);
-          setComment("");
-          setCreateTime("00:00");
-          setTaskTime("00:00");
           toast.success(data.optionalAlertMessage);
-          onClose();
+          closeModal();
         })
         .catch((err) => toast.error(err.data.optionalAlertMessage));
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={closeModal}>
       {isLoading && <Loader />}
       <form className="wrapper" onSubmit={submitFormData}>
         <h2>Создание новой задачи</h2>

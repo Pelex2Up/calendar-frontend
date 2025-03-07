@@ -40,6 +40,7 @@ interface IOnItemResize {
 }
 
 export const CalendarPage: FC = () => {
+  const timelineRef = useRef<any>();
   const [containerHeight, setContainerHeight] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const start = useMemo(() => moment().startOf("day").valueOf(), []);
@@ -59,6 +60,12 @@ export const CalendarPage: FC = () => {
     isError: errTasks,
     refetch: refetchTasks,
   } = useGetTasksListQuery(Number(userId));
+  const [visibleTimeStart, setVisibleTimeStart] = useState(
+    moment().startOf("day").valueOf()
+  );
+  const [visibleTimeEnd, setVisibleTimeEnd] = useState(
+    moment().startOf("day").add(1, "day").valueOf()
+  );
   const [getPaperData, { data: paperParams, isLoading, isError: errPaper }] =
     useGetPaperParamsMutation();
   const [moveTask, { isLoading: movingTask }] = useMoveTaskMutation();
@@ -72,7 +79,6 @@ export const CalendarPage: FC = () => {
     () => moment().startOf("day").add(1, "day").valueOf(),
     []
   );
-  // const [visibleTime, setVisibleTime] = useState<number>(start);
   const [groups, setGroups] = useState<any[]>([
     { id: 1, title: "Загрузка машин" },
   ]);
@@ -180,11 +186,12 @@ export const CalendarPage: FC = () => {
               isProcessing: task.isProcessing,
               isCompleted: task.isCompleted,
               description: task.description,
+              isLocked: task.isLocked,
               canMove: task.canMove,
-              className: "custom-class", // Пример, можно настроить
+              className: "custom-class",
               bgColor: task.hexColor,
               selectedBgColor: task.hexColor,
-              color: "#000000", // Пример, можно настроить
+              color: "#ffffff",
               itemProps: {}, // Дополнительные свойства, если нужно
             }))
           )
@@ -229,17 +236,18 @@ export const CalendarPage: FC = () => {
               canDelete: task.canDelete,
               isProcessing: task.isProcessing,
               isCompleted: task.isCompleted,
+              isLocked: task.isLocked,
               canResize: task.canStretch
                 ? ("both" as "both" | "left" | "right")
                 : false,
               canMove: task.canMove,
               description: task.description,
               parentId: task.parentId || false,
-              // className: "custom-class", // НАСТРОИТЬ!!!
+              className: "custom-class",
               bgColor: task.hexColor,
               selectedBgColor: task.hexColor,
-              color: "#000000",
-              // itemProps: {}, // Дополнительные свойства, если нужно
+              color: "#ffffff",
+              itemProps: {}, // Дополнительные свойства, если нужно
             }))
           )
           .sort((a, b) => {
@@ -269,6 +277,7 @@ export const CalendarPage: FC = () => {
               machine.listOfOrders.map((task) => ({
                 isTimeTask: task.isTimeTask,
                 id: task.id,
+                isLocked: task.isLocked,
                 group: task.machineId,
                 title: task.name,
                 parentId: task.parentId || false,
@@ -286,7 +295,7 @@ export const CalendarPage: FC = () => {
                 className: "custom-class",
                 bgColor: task.hexColor,
                 selectedBgColor: task.hexColor,
-                color: "#000000",
+                color: "#ffffff",
                 itemProps: {},
               }))
             );
@@ -494,6 +503,8 @@ export const CalendarPage: FC = () => {
         img.alt = "logo";
         img.setAttribute("data-img-id", "logotype");
         sidebarHeader.appendChild(img);
+        img.style.cursor = "pointer";
+        img.addEventListener("click", moveToday);
         const timer = document.createElement("div");
         timer.id = "current-time-clock";
         timer.className = "clock-timer";
@@ -515,6 +526,11 @@ export const CalendarPage: FC = () => {
     }
   };
 
+  const moveToday = () => {
+    setVisibleTimeStart(moment().valueOf() - 1000 * 60 * 60 * 24); // 1 день назад
+    setVisibleTimeEnd(moment().valueOf() + 1000 * 60 * 60 * 24); // 1 день вперед
+  };
+
   useEffect(() => {
     setInterval(updateClock, 3000);
     updateClock();
@@ -525,25 +541,24 @@ export const CalendarPage: FC = () => {
   }
 
   // Высота заголовков
-  const headerHeight = 60 + 60 + (zoomUnit === "hour" ? 40 : 0);
+  const headerHeight = 91.11;
 
   // Доступная высота для строк
   const availableHeight = containerHeight - headerHeight;
 
   // Высота строки
-  const lineHeight = availableHeight / groups.length - 10;
+  const lineHeight = availableHeight / groups.length;
 
   return (
     <div
       style={{
         position: "relative",
-        maxWidth: "calc(100vw - 2rem)",
+        maxWidth: "100vw",
         width: "100%",
-        minHeight: "calc(100vh - 2rem)",
+        minHeight: "100vh",
         height: "auto",
         display: "flex",
         gap: "1rem",
-        padding: "1rem",
       }}
     >
       {(isLoading ||
@@ -560,6 +575,7 @@ export const CalendarPage: FC = () => {
         <motion.div
           layout
           style={{
+            margin: "1rem -2rem 0 1rem",
             border: "1px solid rgba(128, 128, 128, 0.107)",
             borderRadius: "0.5rem",
             padding: show ? "1rem" : "0.5rem",
@@ -631,38 +647,42 @@ export const CalendarPage: FC = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1, duration: 0.3 }}
                     className="listItem"
-                    style={
-                      item.isLocked
-                        ? { background: "#ff8d8d", borderRadius: "10px" }
-                        : {}
-                    }
                     onClick={() => showAddDetailsModal(item)}
                   >
                     <div
                       style={
-                        item.isCompleted
+                        item.isLocked
                           ? {
-                              minWidth: "10px",
-                              minHeight: "10px",
-                              width: "10px",
-                              height: "10px",
+                              minWidth: "20px",
+                              minHeight: "20px",
+                              width: "20px",
+                              height: "20px",
+                              borderRadius: "50%",
+                              background: item.hexColor,
+                            }
+                          : item.isCompleted
+                          ? {
+                              minWidth: "20px",
+                              minHeight: "20px",
+                              width: "20px",
+                              height: "20px",
                               borderRadius: "50%",
                               background: "gray",
                             }
                           : item.isWaiting
                           ? {
-                              minWidth: "10px",
-                              minHeight: "10px",
-                              width: "10px",
-                              height: "10px",
+                              minWidth: "20px",
+                              minHeight: "20px",
+                              width: "20px",
+                              height: "20px",
                               borderRadius: "50%",
                               background: "orange",
                             }
                           : {
-                              minWidth: "10px",
-                              minHeight: "10px",
-                              width: "10px",
-                              height: "10px",
+                              minWidth: "20px",
+                              minHeight: "20px",
+                              width: "20px",
+                              height: "0px",
                               borderRadius: "50%",
                               background: "green",
                             }
@@ -758,8 +778,10 @@ export const CalendarPage: FC = () => {
         ref={containerRef}
         style={{
           width: "100%",
-          maxHeight: "calc(100vh - 4rem)",
-          borderRadius: "1rem",
+          minWidth: "90vw",
+          height: "100vh",
+          maxHeight: "100vh",
+          borderRadius: "0.5rem 0 0 0.5rem",
           overflow: "hidden",
         }}
         onMouseDown={handleMouseDown}
@@ -768,11 +790,18 @@ export const CalendarPage: FC = () => {
         {groups.length > 0 && dragItem && itemRenderer && (
           <Timeline
             groups={groups}
+            ref={timelineRef}
             lineHeight={lineHeight}
             dragSnap={5 * 60 * 1000}
             items={items}
+            onTimeChange={(visibleTimeStart, visibleTimeEnd) => {
+              setVisibleTimeStart(visibleTimeStart);
+              setVisibleTimeEnd(visibleTimeEnd);
+            }}
             onItemDrag={dragItem}
             defaultTimeStart={start}
+            visibleTimeEnd={visibleTimeEnd}
+            visibleTimeStart={visibleTimeStart}
             defaultTimeEnd={end}
             onItemContextMenu={(itemId) => contextClick(Number(itemId))}
             onZoom={(context, unit) => {
@@ -780,9 +809,8 @@ export const CalendarPage: FC = () => {
               setZoomUnit(unit);
             }}
             traditionalZoom
-            // minZoom={2 * 60 * 60 * 1000} // 2 hours
             maxZoom={7 * 24 * 60 * 60 * 1000} // 7 days
-            sidebarWidth={window.innerWidth > 1280 ? 150 : 80}
+            sidebarWidth={window.innerWidth > 1280 ? 100 : 80}
             itemRenderer={itemRenderer}
             timeSteps={{
               second: 30,
@@ -796,8 +824,8 @@ export const CalendarPage: FC = () => {
             style={{ height: "100%" }}
           >
             <TimelineHeaders>
-              <DateHeader
-                height={60}
+              {/* <DateHeader
+                height={40}
                 className="mainHeader"
                 unit="primaryHeader"
                 labelFormat={(date) => {
@@ -807,19 +835,48 @@ export const CalendarPage: FC = () => {
                     return "";
                   }
                 }}
-              />
+              /> */}
               <DateHeader
-                height={60}
+                height={50}
                 unit="day"
+                intervalRenderer={({ getIntervalProps, intervalContext }) => {
+                  return (
+                    <div
+                      {...getIntervalProps()}
+                      className={
+                        intervalContext.intervalText ===
+                          `${moment()
+                            .startOf("day")
+                            .format("dddd")
+                            .toUpperCase()} | ${moment()
+                            .startOf("day")
+                            .format("LL")}` ||
+                        intervalContext.intervalText ===
+                          `${moment()
+                            .startOf("day")
+                            .format("dd")
+                            .toUpperCase()} | ${moment()
+                            .startOf("day")
+                            .format("LL")}`
+                          ? "day-header-now"
+                          : "day-header"
+                      }
+                    >
+                      {intervalContext.intervalText}
+                    </div>
+                  );
+                }}
                 labelFormat={(date) => {
                   if (zoomUnit === "hour") {
                     return `${moment(date[0].toISOString())
                       .format("dddd")
-                      .toUpperCase()}`;
+                      .toUpperCase()} | ${moment(date[0].toISOString()).format(
+                      "LL"
+                    )}`;
                   } else
                     return `${moment(date[0].toISOString())
                       .format("dd")
-                      .toUpperCase()}, ${moment(date[0].toISOString()).format(
+                      .toUpperCase()} | ${moment(date[0].toISOString()).format(
                       "LL"
                     )}`;
                 }}
@@ -829,9 +886,14 @@ export const CalendarPage: FC = () => {
                 height={40}
                 unit="hour"
                 labelFormat={(date) => {
-                  return `${moment(date[0].toISOString())
-                    .format("HH:mm")
-                    .toUpperCase()}`;
+                  if (zoomUnit === "hour") {
+                    return `${moment(date[0].toISOString())
+                      .format("HH:mm")
+                      .toUpperCase()}`;
+                  } else
+                    return `${moment(date[0].toISOString())
+                      .format("HH")
+                      .toUpperCase()}`;
                 }}
               />
             </TimelineHeaders>

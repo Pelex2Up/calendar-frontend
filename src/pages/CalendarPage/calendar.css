@@ -126,8 +126,34 @@ div[data-testid="sidebarHeader"] {
 
 .react-calendar-timeline .rct-sidebar .rct-sidebar-row {
   text-align: center;
+  writing-mode: sideways-lr;
+  line-height: 92px !important;
 }
 
 .tasks-list {
   -ms-overflow-style: none;
+}
+
+.day-header {
+  height: 100%;
+  color: white;
+  text-align: center;
+  line-height: 50px;
+  background-color: #888888;
+  border-top: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
+  border-left: 2px solid #bbb;
+  font-weight: 700;
+}
+
+.day-header-now {
+  color: white;
+  background-color: #529454;
+  border-top: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
+  border-left: 2px solid #bbb;
+  height: 100%;
+  text-align: center;
+  line-height: 50px;
+  font-weight: 700;
 }
