@@ -104,6 +104,7 @@ div[data-testid="sidebarHeader"] {
 .headerSidebar {
   flex-direction: column;
   gap: 10px;
+  background-color: #212121 !important;
 }
 
 @keyframes blinker {
@@ -139,7 +140,7 @@ div[data-testid="sidebarHeader"] {
   color: white;
   text-align: center;
   line-height: 50px;
-  background-color: #888888;
+  background-color: #212121;
   border-top: 1px solid #bbb;
   border-bottom: 1px solid #bbb;
   border-left: 2px solid #bbb;
@@ -147,8 +148,8 @@ div[data-testid="sidebarHeader"] {
 }
 
 .day-header-now {
-  color: white;
-  background-color: #529454;
+  color: #000000;
+  background-color: #5ee90c;
   border-top: 1px solid #bbb;
   border-bottom: 1px solid #bbb;
   border-left: 2px solid #bbb;
@@ -156,4 +157,11 @@ div[data-testid="sidebarHeader"] {
   text-align: center;
   line-height: 50px;
   font-weight: 700;
+}
+
+.rct-sidebar > div > div {
+  background-color: #212121 !important;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 18px;
 }

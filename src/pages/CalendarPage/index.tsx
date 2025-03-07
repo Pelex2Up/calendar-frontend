@@ -93,6 +93,26 @@ export const CalendarPage: FC = () => {
   const [isBusy, setIsBusy] = useState<boolean>(false);
   const [sseConnection, setSseConnection] = useState<EventSource>();
 
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === "Escape") {
+      setTaskModal(false);
+      setDetailsModal(false);
+      setInfoModal(false);
+    }
+  };
+
+  useEffect(() => {
+    if (taskModal || detailsModal || infoModal) {
+      document.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.removeEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [taskModal, detailsModal, infoModal]);
+
   const handleMouseDown = () => {
     setIsDragging(true);
   };
@@ -693,7 +713,38 @@ export const CalendarPage: FC = () => {
                         wideList ? "listItemTitleShort" : "listItemTitle"
                       }
                     >
-                      {item.name +
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          flex: 1,
+                          gap: "5px",
+                          alignItems: "center",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {item.isProcessing && (
+                          <p style={{ fontSize: "14px", margin: 0 }}>
+                            {item.publishedDateTimeInfo}
+                          </p>
+                        )}
+                        <p
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: "18px",
+                            margin: 0,
+                          }}
+                        >
+                          {item.name}
+                        </p>
+                      </div>
+                      {wideList && (
+                        <p style={{ margin: 0, color: "gray" }}>
+                          {item.description}
+                        </p>
+                      )}
+                      {/* {item.publishedDateTimeInfo +
+                        " " +
+                        item.name +
                         `${
                           wideList
                             ? ` | ${
@@ -704,7 +755,7 @@ export const CalendarPage: FC = () => {
                                   : item.description
                               }`
                             : ""
-                        }`}
+                        }`} */}
                     </span>
                     {item.isCompleted ? (
                       <svg
@@ -778,7 +829,7 @@ export const CalendarPage: FC = () => {
         ref={containerRef}
         style={{
           width: "100%",
-          minWidth: "90vw",
+          minWidth: "96vw",
           height: "100vh",
           maxHeight: "100vh",
           borderRadius: "0.5rem 0 0 0.5rem",

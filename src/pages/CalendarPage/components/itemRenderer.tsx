@@ -111,7 +111,7 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               overflow: "hidden",
               textAlign: "center",
               color: item.isLocked ? "#ffffff" : "#000000",
-              fontWeight: "600",
+              fontWeight: "bold",
               padding: "10px",
               fontSize: '18px',
               margin: 0,
