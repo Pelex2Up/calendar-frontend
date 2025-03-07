@@ -601,7 +601,7 @@ export const CalendarPage: FC = () => {
             margin: "1rem -2rem 0 1rem",
             border: "1px solid rgba(128, 128, 128, 0.107)",
             borderRadius: "0.5rem",
-            padding: show ? "1rem" : "0.5rem",
+            padding: "0.5rem",
             display: "flex",
             flexDirection: "column",
             alignItems: show ? "" : "center",
