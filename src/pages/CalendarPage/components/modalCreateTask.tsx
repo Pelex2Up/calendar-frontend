@@ -286,7 +286,7 @@ export const ModalCreateTask: FC<ICreateTaskModal> = ({
         </div>
         {/* <p className="notify">Актуально только при постановке в график</p> */}
         <div className="wrapper-picker">
-          <label htmlFor="lock">Залочить при поставновке в график</label>
+          <label htmlFor="lock">Залочить при постановке в график</label>
           <input
             type="checkbox"
             checked={lock}

@@ -53,7 +53,8 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
       data-tooltip-id={item.breakTime ? "" : "my-tooltip"}
       data-tooltip-html={`<div><h3>${item.title}</h3><h5>${
         item.description
-      }</h5><ul><li>Начало: ${
+      }</h5>
+      <h5>${item.optionalComment || ""}</h5><ul><li>Начало: ${
         itemContext.dragTime
           ? `${String(moment(itemContext.dragTime).hours()).padStart(
               2,
@@ -160,7 +161,7 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               padding: "10px",
               fontSize: "18px",
               margin: 0,
-              writingMode: "vertical-lr",
+              writingMode: "vertical-rl",
               textOrientation: "mixed",
               transform: "rotate(180deg)",
               textOverflow: "ellipsis",
@@ -205,7 +206,7 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               fontWeight: "600",
               textAlign: "center",
               textOverflow: "ellipsis",
-              writingMode: "vertical-lr",
+              writingMode: "vertical-rl",
               textOrientation: "mixed",
               transform: "rotate(180deg)",
               whiteSpace: "wrap",

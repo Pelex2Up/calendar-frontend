@@ -205,82 +205,6 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
             ))}
           </select>
         </div>
-        {/* <div className="wrapper-selector">
-          <label htmlFor="material">Материал:</label>
-          <select
-            id="material"
-            required
-            defaultValue={"Выберите материал"}
-            value={selectedState.material}
-            onChange={(e) => updateField("material", Number(e.target.value))}
-          >
-            {materials.map((material) => (
-              <option value={material.Value} key={material.Value}>
-                {material.Key}
-              </option>
-            ))}
-          </select>
-        </div>
-        {densityArray && densityArray?.length > 0 && (
-          <>
-            <div className="wrapper-selector">
-              <label htmlFor="density">Плотность:</label>
-              <select
-                id="density"
-                required
-                value={selectedState.density}
-                onChange={(event) =>
-                  updateField("density", Number(event.target.value))
-                }
-              >
-                <option
-                  value=""
-                  disabled
-                  selected
-                  hidden
-                  style={{ color: "#9c9c9c" }}
-                >
-                  Выберите плотность
-                </option>
-                {densityArray.map((el, index) => (
-                  <option value={el} key={el + index}>
-                    {el}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </>
-        )}
-        {formatArray && formatArray?.length > 0 && (
-          <>
-            <div className="wrapper-selector">
-              <label htmlFor="format">Формат:</label>
-              <select
-                required
-                id="format"
-                value={selectedState.format}
-                onChange={(event) =>
-                  updateField("format", Number(event.target.value))
-                }
-              >
-                <option
-                  value=""
-                  disabled
-                  selected
-                  hidden
-                  style={{ color: "#9c9c9c" }}
-                >
-                  Выберите формат
-                </option>
-                {formatArray.map((el, index) => (
-                  <option value={el.Value} key={el.Value + index}>
-                    {el.Key}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </>
-        )} */}
         <div className="wrapper-comment">
           <label htmlFor="comment">Комментарий печатнику:</label>
           <textarea
@@ -300,7 +224,7 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
         </div>
         {/* <p className="notify">Актуально только при постановке в график</p> */}
         <div className="wrapper-picker" style={{ marginBottom: "1rem" }}>
-          <label htmlFor="lock">Залочить при поставновке в график</label>
+          <label htmlFor="lock">Залочить при постановке в график</label>
           <input
             type="checkbox"
             checked={lock}
