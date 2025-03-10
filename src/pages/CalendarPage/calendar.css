@@ -127,7 +127,8 @@ div[data-testid="sidebarHeader"] {
 
 .react-calendar-timeline .rct-sidebar .rct-sidebar-row {
   text-align: center;
-  writing-mode: sideways-lr;
+  writing-mode: vertical-lr;
+  rotate: 180deg;
   line-height: 92px !important;
 }
 

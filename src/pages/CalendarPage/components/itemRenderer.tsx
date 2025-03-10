@@ -1,13 +1,52 @@
 import moment from "moment";
 import { TimelineProps } from "types/common";
+import emojiRegex from "emoji-regex";
+
+type TextPart = {
+  type: "text";
+  content: string;
+};
+
+type EmojiPart = {
+  type: "emoji";
+  content: string;
+};
+
+type Part = TextPart | EmojiPart;
 
 export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
   const { item, itemContext, getItemProps, getResizeProps } = props;
   const { right: rightResizeProps } = getResizeProps();
 
-  if (itemContext.selected) {
-    console.log(item);
-  }
+  const parseText = (text: string): Part[] => {
+    const regex = emojiRegex();
+    const parts: Part[] = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      // Добавляем текст до эмодзи
+      if (match.index > lastIndex) {
+        parts.push({
+          type: "text",
+          content: text.slice(lastIndex, match.index),
+        });
+      }
+      // Добавляем эмодзи
+      parts.push({ type: "emoji", content: match[0] });
+      lastIndex = match.index + match[0].length;
+    }
+
+    // Добавляем оставшийся текст
+    if (lastIndex < text.length) {
+      parts.push({ type: "text", content: text.slice(lastIndex) });
+    }
+
+    return parts;
+  };
+
+  // Парсим текст
+  const name = parseText(itemContext.title);
 
   return (
     <div
@@ -101,13 +140,19 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
           lineHeight: 0,
         }}
       >
-        <div style={{ height: itemContext.dimensions.height }}>
+        <div
+          style={{
+            height: itemContext.dimensions.height,
+          }}
+        >
           <p
             style={{
               height: itemContext.dimensions.height,
               minHeight: itemContext.dimensions.height / 2,
               // width: `calc(${itemContext.dimensions.height}px - 10px)`,
-              display: "inline-block",
+              display: "flex",
+              justifyContent: "center",
+              gap: "3px",
               overflow: "hidden",
               textAlign: "center",
               color: item.isLocked ? "#ffffff" : "#000000",
@@ -115,17 +160,38 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               padding: "10px",
               fontSize: "18px",
               margin: 0,
+              writingMode: "vertical-lr",
+              textOrientation: "mixed",
+              transform: "rotate(180deg)",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
-              writingMode: "vertical-lr",
-              rotate: "180deg",
               lineHeight: `20px`,
             }}
           >
-            {item.breakTime ? "" : itemContext.title}
+            {item.breakTime
+              ? ""
+              : name.map((part, index) => {
+                  if (part.type === "emoji") {
+                    return (
+                      <span key={index} className={"emoji"}>
+                        {part.content}
+                      </span>
+                    );
+                  } else if (part.type === "text") {
+                    return (
+                      <span key={index} className={"text"}>
+                        {part.content}
+                      </span>
+                    );
+                  }
+                })}
           </p>
         </div>
-        <div style={{ height: itemContext.dimensions.height }}>
+        <div
+          style={{
+            height: itemContext.dimensions.height,
+          }}
+        >
           <span
             style={{
               height: itemContext.dimensions.height,
@@ -139,9 +205,10 @@ export const itemRenderer: TimelineProps["itemRenderer"] = (props) => {
               fontWeight: "600",
               textAlign: "center",
               textOverflow: "ellipsis",
-              whiteSpace: "wrap",
               writingMode: "vertical-lr",
-              rotate: "180deg",
+              textOrientation: "mixed",
+              transform: "rotate(180deg)",
+              whiteSpace: "wrap",
               lineHeight: itemContext.dimensions.width > 100 ? `20px` : 0,
             }}
           >

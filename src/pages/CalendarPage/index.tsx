@@ -64,7 +64,7 @@ export const CalendarPage: FC = () => {
     moment().startOf("day").valueOf()
   );
   const [visibleTimeEnd, setVisibleTimeEnd] = useState(
-    moment().startOf("day").add(1, "day").valueOf()
+    moment().startOf("day").add(3, "day").valueOf()
   );
   const [getPaperData, { data: paperParams, isLoading, isError: errPaper }] =
     useGetPaperParamsMutation();
@@ -671,6 +671,7 @@ export const CalendarPage: FC = () => {
                     transition={{ delay: index * 0.1, duration: 0.3 }}
                     className="listItem"
                     onClick={() => showAddDetailsModal(item)}
+                    title={item.name}
                   >
                     <div
                       style={
@@ -711,60 +712,44 @@ export const CalendarPage: FC = () => {
                             }
                       }
                     />
-                    <span
-                      className={
-                        wideList ? "listItemTitleShort" : "listItemTitle"
-                      }
-                    >
-                      <div
-                        style={{
-                          display: "inline-flex",
-                          flex: 1,
-                          gap: "5px",
-                          alignItems: "center",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {item.isProcessing && (
-                          <p style={{ fontSize: "14px", margin: 0 }}>
-                            {item.publishedDateTimeInfo}
-                          </p>
-                        )}
+                    <span className={"listItemTitle"}>
+                      {item.isProcessing && (
                         <p
                           style={{
-                            fontWeight: "bold",
-                            fontSize: "18px",
+                            fontSize: "14px",
                             margin: 0,
+                            lineHeight: "14px",
                           }}
                         >
-                          {item.name}
+                          {item.publishedDateTimeInfo}
                         </p>
-                      </div>
+                      )}
+                      <p
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: "18px",
+                          margin: 0,
+                          overflow: "hidden",
+                          width: "100%",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          lineHeight: "18px",
+                        }}
+                      >
+                        {item.name}
+                      </p>
                       {wideList && (
                         <p
                           style={{
                             margin: 0,
                             fontSize: "14px",
                             color: "#969696",
+                            lineHeight: "16px",
                           }}
                         >
                           {item.description}
                         </p>
                       )}
-                      {/* {item.publishedDateTimeInfo +
-                        " " +
-                        item.name +
-                        `${
-                          wideList
-                            ? ` | ${
-                                item.isProcessing
-                                  ? item.description +
-                                    " | " +
-                                    item.publishedDateTimeInfo
-                                  : item.description
-                              }`
-                            : ""
-                        }`} */}
                     </span>
                     {item.isCompleted ? (
                       <svg
