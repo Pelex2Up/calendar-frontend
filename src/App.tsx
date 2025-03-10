@@ -5,14 +5,11 @@ import { MainLayout } from "./components/MainLayout";
 import { PathE } from "./enum/PathE";
 import { FC } from "react";
 import { CalendarPage } from "./pages/CalendarPage";
-// import { CalendarTimeline } from "./pages/CalendarPage/gitHubCalendar";
 import { NotFound404 } from "./pages/404Page";
 import { useAppSelector } from "./store/hooks";
 import { selectUser } from "./selectors";
 
 export const App: FC = () => {
-  // const { pathname } = useLocation();
-  // const navigate = useNavigate();
   const { auth: isAuth } = useAppSelector(selectUser);
 
   return (
@@ -26,7 +23,6 @@ export const App: FC = () => {
           )}
         </Route>
         <Route path={"*"} element={<NotFound404 />} />
-        {/* <Route path={PathE.Initial} element={<CalendarPage />} /> */}
       </Routes>
     </div>
   );
