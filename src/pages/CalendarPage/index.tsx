@@ -597,18 +597,9 @@ export const CalendarPage: FC = () => {
       >
         <motion.div
           layout
+          className="sidebarButton"
           style={{
-            margin: "1rem -2rem 0 1rem",
-            border: "1px solid rgba(128, 128, 128, 0.107)",
-            borderRadius: "0.5rem",
-            padding: "0.5rem",
-            display: "flex",
-            flexDirection: "column",
             alignItems: show ? "" : "center",
-            gap: "1rem",
-            overflow: "hidden",
-            maxHeight: "calc(100vh - 4rem)",
-            position: "relative",
           }}
           animate={{
             height: show ? "auto" : "32px",
