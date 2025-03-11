@@ -841,9 +841,11 @@ export const CalendarPage: FC = () => {
             defaultTimeEnd={end}
             onItemContextMenu={(itemId) => contextClick(Number(itemId))}
             onZoom={(context, unit) => {
-              console.log(context);
+              setVisibleTimeStart(context.visibleTimeStart);
+              setVisibleTimeEnd(context.visibleTimeEnd);
               setZoomUnit(unit);
             }}
+            minResizeWidth={100}
             traditionalZoom
             maxZoom={7 * 24 * 60 * 60 * 1000} // 7 days
             sidebarWidth={window.innerWidth > 1280 ? 100 : 80}
