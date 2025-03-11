@@ -289,7 +289,7 @@ export const ModalTaskDetails: FC<IDetailsTaskModal> = ({
         <div className="buttons">
           {autoTime && (
             <button
-              type="submit"
+              type="button"
               className="buttons-delete"
               onClick={handleDelete}
             >
