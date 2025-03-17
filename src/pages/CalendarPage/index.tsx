@@ -704,17 +704,18 @@ export const CalendarPage: FC = () => {
                       }
                     />
                     <span className={"listItemTitle"}>
-                      {item.isProcessing && (
-                        <p
-                          style={{
-                            fontSize: "14px",
-                            margin: 0,
-                            lineHeight: "14px",
-                          }}
-                        >
-                          {item.publishedDateTimeInfo}
-                        </p>
-                      )}
+                      {item.publishedDateTimeInfo &&
+                        item.publishedDateTimeInfo.length > 0 && (
+                          <p
+                            style={{
+                              fontSize: "14px",
+                              margin: 0,
+                              lineHeight: "14px",
+                            }}
+                          >
+                            {item.publishedDateTimeInfo}
+                          </p>
+                        )}
                       <p
                         style={{
                           fontWeight: "bold",
